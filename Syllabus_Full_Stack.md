@@ -18,7 +18,7 @@ This guide takes you from zero to a full-stack MERN developer in 8 weeks, phase-
 - JavaScript fundamentals: variables, loops, functions, DOM
 
 **Projects:**
-- Personal portfolio site
+
 - Quiz app using plain JS
 - Responsive landing page
 
