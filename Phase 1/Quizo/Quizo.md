@@ -2,6 +2,8 @@
 
 A responsive, feature-rich **Quiz Application** built with **Tailwind CSS** and **JavaScript**. This app dynamically fetches quiz questions, tracks your score, and lets you review your answers at the end.
 
+🌐 **Live Demo:** [journey-8lor06gja-souvik-duttas-projects-f8a13627.vercel.app](journey-8lor06gja-souvik-duttas-projects-f8a13627.vercel.app) <!-- Replace with your actual Vercel link -->
+
 ---
 
 ## 🚀 Features
@@ -21,10 +23,12 @@ A responsive, feature-rich **Quiz Application** built with **Tailwind CSS** and 
 - **HTML5**
 - **Tailwind CSS**
 - **JavaScript (ES6+)**
+
 ---
 
 ## ⚙️ How to Run Locally
 
-1. Clone the repository:
+1. **Clone the repository:**
+
 ```bash
 git clone https://github.com/Souvik-Dutta12/quiz-app.git
