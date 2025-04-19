@@ -2,8 +2,8 @@
 
 A responsive, feature-rich **Quiz Application** built with **Tailwind CSS** and **JavaScript**. This app dynamically fetches quiz questions, tracks your score, and lets you review your answers at the end.
 
-🌐 **Live Demo:** [journey-flax-six.vercel.app
-](journey-flax-six.vercel.app) <!-- Replace with your actual Vercel link -->
+🌐 **Live Demo:** [http://journey-flax-six.vercel.app
+](http://journey-flax-six.vercel.app) <!-- Replace with your actual Vercel link -->
 
 ---
 
