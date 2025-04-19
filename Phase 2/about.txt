@@ -1,5 +1,5 @@
 Using rect 
 
+todo
 make weather app -- Using API
 blog/news viewer
-todo
