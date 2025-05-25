@@ -25,11 +25,3 @@ A responsive, feature-rich **Quiz Application** built with **Tailwind CSS** and 
 - **Tailwind CSS**
 - **JavaScript (ES6+)**
 
----
-
-## ⚙️ How to Run Locally
-
-1. **Clone the repository:**
-
-```bash
-git clone https://github.com/Souvik-Dutta12/quiz-app.git
