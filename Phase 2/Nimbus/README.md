@@ -2,8 +2,8 @@
 
 **Nimbus.now** is a sleek and responsive weather application that provides real-time weather updates for any city in the world. With an intuitive user interface and accurate data powered by external APIs, it's the perfect tool for checking the forecast on the go.
 
-🌐 **Live Demo:** [http://journey-flax-six.vercel.app
-](http://journey-flax-six.vercel.app) <!-- Replace with your actual Vercel link -->
+🌐 **Live Demo:** [http://nimbus-henna.vercel.app
+](http://nimbus-henna.vercel.app) <!-- Replace with your actual Vercel link -->
 
 ---
 ## 🚀 Features
