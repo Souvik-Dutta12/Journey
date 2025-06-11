@@ -17,8 +17,8 @@ const CollectionHero = () => {
     return (
         <>
 
-            <div className="md:h-auto h-1/2 md:w-full sm:w-[90vw] rounded-md bg-black relative flex flex-col items-center justify-center antialiased mt-50  ">
-                <h1 className='relative z-10 text-2xl sm:text-2xl md:text-2xl lg:text-2xl max-w-8xl bg-clip-text h-35 text-transparent bg-gradient-to-b from-white to-neutral-500  text-center font-sans p-9 font-bold leading-tight '>Welcome to the blog collection! Explore a variety of posts shared by our community — from personal insights to helpful tutorials. Got something to share? You can also write your own blog right from here and let your voice be heard. Start expressing your thoughts, stories, or knowledge with just a click!</h1>
+            <div className="md:h-auto h-1/2 md:w-full sm:w-[90vw] rounded-md bg-black relative flex flex-col items-center justify-center antialiased md:mt-50  sm:mt-10">
+                <h1 className='relative z-10 text-lg sm:text-lg md:text-2xl lg:text-2xl max-w-8xl bg-clip-text md:h-35 text-transparent bg-gradient-to-b from-white to-neutral-500  text-center font-sans p-9 font-bold leading-tight '>Welcome to the blog collection! Explore a variety of posts shared by our community — from personal insights to helpful tutorials. Got something to share? You can also write your own blog right from here and let your voice be heard. Start expressing your thoughts, stories, or knowledge with just a click!</h1>
                 <Link to={"/writeblog"} className=''>
                     <Button
                         containerClassName="w-auto  hover:bg-zinc-800"
@@ -29,13 +29,13 @@ const CollectionHero = () => {
                     </Button>
                 </Link>
             </div>
-            <div className="w-full md:w-full sm:w-[85vw] mt-3 p-6 flex items-center justify-center gap-20">
+            <div className="w-full md:w-full sm:w-[90vw] mt-3 p-6 flex items-center justify-center gap-10 md:gap-20 sm:gap-10">
                 <button className='cursor-pointer'>
                     <Link to={'/total'}>
                         <GlareCard className="flex flex-col items-center justify-center">
                     
-                    <h1 className='flex items-center gap-2 text-4xl justify-center font-bold'>Total blog <i className="ri-news-line"></i></h1>
-                    <span className='font-bold text-4xl'>0</span>
+                    <h1 className='flex items-center md:gap-2 sm:gap-1 md:text-4xl sm:text-lg justify-center font-bold'>Total blog <i className="ri-news-line"></i></h1>
+                    <span className='font-bold md:text-4xl sm:text-lg'>0</span>
                     
                 </GlareCard>
                     </Link>
@@ -43,17 +43,17 @@ const CollectionHero = () => {
                 <button className=' cursor-pointer'>
                     <Link to={'/draft'}>
                         <GlareCard className="flex flex-col items-center justify-center">
-                    <h1 className='flex items-center gap-2 text-4xl justify-center font-bold'>Draft<i className="ri-draft-line"></i></h1>
-                    <span className='font-bold text-4xl'>0</span>
+                    <h1 className='flex items-center md:gap-2 sm:gap-1 md:text-4xl sm:text-lg justify-center font-bold'>Draft<i className="ri-draft-line"></i></h1>
+                    <span className='font-bold md:text-4xl sm:text-lg'>0</span>
                 </GlareCard>
                     </Link>
                 </button>
 
             </div>
 
-            <div className="w-full md:w-full sm:w-[85vw] min-h-screen p-6 ">
+            <div className="w-full md:w-full sm:w-[90vw] min-h-screen p-6 ">
                 <h1 className=" text-5xl sm:text-5xl md:text-7xl  bg-clip-text h-30 text-transparent bg-gradient-to-b from-white to-neutral-700  text-center font-sans font-bold  md:mt-10 sm:-mt-20">Our Collections</h1>
-                <div className="flex flex-wrap gap-2 p-5">
+                <div className="w-full md:w-full sm:w-[90vw] flex flex-wrap gap-2 p-5">
                     <span className="cursor-pointer transition-all hover:bg-indigo-300 hover:border-indigo-500 duration-300 hover:text-black rounded-md border border-indigo-400 bg-indigo-200 px-1.5 py-0.5 text-sm leading-none text-indigo-700 no-underline group-hover:no-underline dark:bg-indigo-300/10 dark:text-indigo-500">ai</span>
                     <span className="cursor-pointer transition-all hover:bg-yellow-300 hover:border-yellow-500 duration-300 hover:text-black rounded-md border border-yellow-400 bg-yellow-200 px-1.5 py-0.5 text-sm leading-none text-yellow-700 no-underline group-hover:no-underline dark:bg-yellow-300/10 dark:text-yellow-500">python</span>
                     <span className="cursor-pointer transition-all hover:bg-blue-300 hover:border-blue-500 duration-300 hover:text-black rounded-md border border-blue-400 bg-blue-200 px-1.5 py-0.5 text-sm leading-none text-blue-700 no-underline group-hover:no-underline dark:bg-blue-300/10 dark:text-blue-500">programming</span>

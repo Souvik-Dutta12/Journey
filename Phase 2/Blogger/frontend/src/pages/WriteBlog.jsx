@@ -88,13 +88,13 @@ const WriteBlog = () => {
 
   return (
     <>
-      <div className="w-full mx-auto mt-35 md:mt-40 sm:mt-5 px-20 bg-white dark:bg-black rounded shadow-md">
-        <h1 className="relative z-10 text-5xl sm:text-3xl md:text-4xl lg:text-5xl  bg-clip-text h-20 text-transparent bg-gradient-to-b from-white to-neutral-500  text-center font-sans font-bold leading-tight">
+      <div className="w-screen md:w-screen sm:w-[85vw] mx-auto mt-0 md:mt-40 sm:mt-5 px-7 md:px-20 sm:px-5 bg-white dark:bg-black rounded shadow-md">
+        <h1 className="relative z-10 text-3xl sm:text-3xl md:text-4xl lg:text-5xl  bg-clip-text h-20 text-transparent bg-gradient-to-b from-white to-neutral-500  text-center font-sans font-bold leading-tight">
           Write Your Own Blog
         </h1>
-        <form onSubmit={handleSubmit} className="space-y-6 mt-5">
+        <form onSubmit={handleSubmit} className="space-y-6 mt-5 ">
           {/* Author Name */}
-          <div className="flex flex-col gap-1 w-1/3">
+          <div className="flex flex-col gap-1 md:w-1/3 sm:w-full">
             <label htmlFor="author" className="block text-md font-bold text-white">
               Author Name
             </label>
@@ -110,7 +110,7 @@ const WriteBlog = () => {
           </div>
 
           {/* Title */}
-          <div className="flex flex-col gap-1 w-1/2">
+          <div className="flex flex-col gap-1 md:w-1/2 sm:w-full">
             <label htmlFor="title" className="block text-md font-bold text-white">
               Title
             </label>
@@ -126,7 +126,7 @@ const WriteBlog = () => {
           </div>
 
           {/* Slug (readonly) */}
-          <div className="flex flex-col gap-1 w-1/2">
+          <div className="flex flex-col gap-1 md:w-1/2 sm:w-full">
             <label htmlFor="slug" className="block text-md font-bold text-white">
               Slug (auto-generated)
             </label>
@@ -138,9 +138,9 @@ const WriteBlog = () => {
               className="w-full text-md font-normal px-4 py-2 border rounded-xl bg-zinc-700 border-zinc-600 focus:outline-none focus:ring-0 focus:ring-zinc-500 cursor-not-allowed "
             />
           </div>
-          <div className="flex justify-between">
+          <div className="flex flex-col md:flex-row justify-between gap-4">
             <div className="w-full">
-              <div className="flex flex-col gap-1 w-1/3">
+              <div className="flex flex-col gap-1 md:w-1/3 sm:w-full">
                 <label htmlFor="coverImage" className="block text-md font-bold text-white">
                   Cover Image
                 </label>
@@ -164,7 +164,7 @@ const WriteBlog = () => {
 
 
             {/* Tags Input */}
-            <div className="flex flex-col gap-1 w-2/3 ">
+            <div className="flex flex-col gap-1 md:w-2/3 sm:w-full mt-5 md:mt-0 sm:mt-5">
               <label htmlFor="tags" className="block text-md font-bold text-white">
                 Tags (press Enter or comma to add)
               </label>
