@@ -229,7 +229,7 @@ const WriteBlog = () => {
               <Button
               containerClassName="w-auto rounded-md hover:bg-purple-700 duration-300"
               borderRadius="1 rem"
-              className=" bg-white rounded-md px-5 py-0 dark:bg-black/90 z-40 cursor-pointer text-black dark:text-white border-neutral-200 dark:border-slate-800  flex gap-3 hover:text-[#7fcfec] duration-300"
+              className=" bg-white rounded-md px-5 py-0 dark:bg-black/90 z-40 cursor-pointer text-black dark:text-white border-neutral-200 text-sm md:text-lg dark:border-slate-800  flex gap-3 hover:text-[#7fcfec] duration-300"
             >
               Generate with ai < i className="ri-bard-fill "></i>
             </Button>

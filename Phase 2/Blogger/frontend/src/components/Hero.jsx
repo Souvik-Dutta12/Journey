@@ -7,7 +7,7 @@ const Hero = () => {
     return (
         <div className="md:h-screen h-1/2 md:w-full sm:w-[90vw] rounded-md bg-neutral-950 relative flex flex-col items-center justify-center antialiased">
             <div className="max-w-4xl mx-auto lg:p-4 md:p-6 text-center ">
-                <h1 className="relative z-10 text-5xl sm:text-5xl md:text-6xl lg:text-8xl  bg-clip-text h-35 text-transparent bg-gradient-to-b from-white to-neutral-500  text-center font-sans font-bold leading-tight">
+                <h1 className="relative z-10 text-5xl sm:text-5xl md:text-6xl lg:text-8xl mt-5 md:mt-0  bg-clip-text h-35 text-transparent bg-gradient-to-b from-white to-neutral-500  text-center font-sans font-bold leading-tight">
                     Join the blogger
                 </h1>
                 <p></p>
