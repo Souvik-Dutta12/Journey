@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const blogSchema = new Schema(
     {
-        tittle: {
+        title: {
             type: String,
             required: true,
             unique: true,
@@ -14,7 +14,7 @@ const blogSchema = new Schema(
         },
         short_description: {
             type: String,
-            reqiured: true,
+            required: true,
         },
         description: {
             type: String,
@@ -38,10 +38,15 @@ const blogSchema = new Schema(
                     type: Schema.Types.ObjectId,
                     ref: "Tag"
                 }
-            ]
+            ],
+        status:{
+            type:String,
+            enum:['draft','published'],
+            default:'draft',
+        }
 
     }, { timestamps: true }
 )
 
-
+//slugify
 export const Blog = mongoose.model("Blog", blogSchema);

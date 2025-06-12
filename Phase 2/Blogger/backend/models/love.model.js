@@ -10,10 +10,10 @@ const loveSchema = new Schema(
             type:Schema.Types.ObjectId,
             ref:"Comment"
         },
-        lovedby:{
+        lovedby:[{
             type:Schema.Types.ObjectId,
             ref:"User",
-        }
+        }]
     },{timestamps:true}
 )
 

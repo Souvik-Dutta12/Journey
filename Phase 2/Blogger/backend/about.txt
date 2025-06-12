@@ -31,3 +31,7 @@ like{
   blog: { type: mongoose.Schema.Types.ObjectId, ref: 'BlogPost' },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'UserProfile' },
 };
+
+
+architecture
+https://excalidraw.com/#json=JtcX12qjL43GoV2-zOAt0,utdKlIXScx1FN3q36I-XRg

@@ -16,10 +16,12 @@ const userSchema = new Schema(
             unique:true,
             lowercase:true,
             trim:true,
+            
         },
         password:{
             type:String,
             required:[true,'Password is required'],
+            minlength: [6, 'Password must be at least 6 characters long'],
         },
         refreshToken:{
             type:String,
@@ -28,5 +30,5 @@ const userSchema = new Schema(
     {timestamps:true}
 )
 
-
+//hashing
 export const User = mongoose.model("User", userSchema);
