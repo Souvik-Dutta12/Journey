@@ -1,4 +1,6 @@
 import mongoose, { Schema } from "mongoose";
+import slugify from "slugify";
+
 
 const blogSchema = new Schema(
     {
@@ -12,7 +14,7 @@ const blogSchema = new Schema(
             required: true,
             unique: true,
         },
-        short_description: {
+        shortDescription: {
             type: String,
             required: true,
         },
@@ -20,11 +22,11 @@ const blogSchema = new Schema(
             type: String,
             required: true,
         },
-        cover_image: {
+        coverImage: {
             type: String, //cloudinary
             required: true,
         },
-        author_name: {
+        authorName: {
             type: String,
             required: true,
         },
@@ -49,4 +51,12 @@ const blogSchema = new Schema(
 )
 
 //slugify
+blogSchema.pre('validate',function(next){
+    if (this.title && !this.slug) {
+    this.slug = slugify(this.title, { lower: true, strict: true });
+  }
+  next(); 
+})
+
+
 export const Blog = mongoose.model("Blog", blogSchema);

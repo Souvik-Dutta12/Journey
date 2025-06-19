@@ -17,7 +17,7 @@ const commentSchema = new Schema(
             required:true,
             maxlength:1000,
         },
-        love:[
+        loves:[
             {
                 type:Schema.Types.ObjectId,
                 ref:"User",
