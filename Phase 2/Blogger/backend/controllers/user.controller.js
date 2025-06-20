@@ -22,7 +22,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
         throw new ApiError(500, "Something went wrong while generating refresh and access token");
     }
 }
-export const signUpUser = asyncHandler(
+const signUpUser = asyncHandler(
     async (req, res) => {
         // check for existing email/username
         const { email, password, username } = req.body;
@@ -58,7 +58,7 @@ export const signUpUser = asyncHandler(
     }
 )
 
-export const loginUser = asyncHandler(async (req, res) => {
+const loginUser = asyncHandler(async (req, res) => {
 
     // find user by email
     const { email, password } = req.body;
@@ -105,7 +105,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 
 })
 
-export const logoutUser = asyncHandler(async (req, res) => {
+const logoutUser = asyncHandler(async (req, res) => {
 
     // remove refresh token
     await User.findByIdAndUpdate(
@@ -178,7 +178,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 })
 
-export const updateProfieImage = asyncHandler(async (req, res) => {
+const updateProfieImage = asyncHandler(async (req, res) => {
     const profileImageLocalPath = req.file?.path;
 
     if (!profileImageLocalPath) {
@@ -208,7 +208,7 @@ export const updateProfieImage = asyncHandler(async (req, res) => {
         )
 })
 
-export const getUserById = asyncHandler(async (req, res) => {
+const getUserById = asyncHandler(async (req, res) => {
     const { userId } = req.params;
 
     const currentUser = await User.findById(userId).select("-password -refreshToken");
@@ -222,7 +222,7 @@ export const getUserById = asyncHandler(async (req, res) => {
 
 })
 
-export const updateProfileDetails = asyncHandler(async (req, res) => {
+const updateProfileDetails = asyncHandler(async (req, res) => {
     const { username, email } = req.body;
 
     if (!username || !email) {
@@ -247,7 +247,7 @@ export const updateProfileDetails = asyncHandler(async (req, res) => {
         )
 })
 
-export const getBlogsByUser = asyncHandler(async (req, res) => {
+const getBlogsByUser = asyncHandler(async (req, res) => {
     const userID = req.user?._id;
 
     if (!userID) {

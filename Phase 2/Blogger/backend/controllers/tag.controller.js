@@ -3,7 +3,7 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-export const createTag = asyncHandler(async (req,res)=>{
+const createTag = asyncHandler(async (req,res)=>{
   const { name } = req.body;
 
   if (!name) {
@@ -25,7 +25,7 @@ export const createTag = asyncHandler(async (req,res)=>{
     new ApiResponse(201, tag, "Tag created with Gemini-generated color")
   );
 })
-export const getAllTags = asyncHandler(async (req,res)=>{
+const getAllTags = asyncHandler(async (req,res)=>{
   const tags = await Tag.find().sort("name");
 
   if(!tags || tags.length === 0){

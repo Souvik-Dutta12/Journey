@@ -16,6 +16,16 @@ app.use(express.static('public'));
 app.use(cookieParser());
 
 //routes
+import userRouter from "./routes/user.route.js"
+import blogRouter from "./routes/blog.route.js"
+import commentRouter from "./routes/comment.route.js"
+import loveRouter from "./routes/love.route.js"
+import tagRouter from "./routes/tag.route.js"
 
+app.use("/api/v1/users",userRouter)
+app.use("/api/v1/blogs",blogRouter)
+app.use("/api/v1/comments",commentRouter)
+app.use("/api/v1/loves",loveRouter)
+app.use("/api/v1/tags",tagRouter)
 
 export {app};

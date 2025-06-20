@@ -4,7 +4,7 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-export const createComment = asyncHandler(async (req,res)=>{
+const createComment = asyncHandler(async (req,res)=>{
   const {slug} = req.params;
   const {userId} = req.user?._id;
   const {content} = req.body;
@@ -36,7 +36,7 @@ export const createComment = asyncHandler(async (req,res)=>{
   )
 })
 
-export const getCommentsByBlog = asyncHandler(async (req,res)=>{
+const getCommentsByBlog = asyncHandler(async (req,res)=>{
   const {slug} = req.params;
 
   if(!slug){
@@ -61,7 +61,7 @@ export const getCommentsByBlog = asyncHandler(async (req,res)=>{
   )
 })
 
-export const toggleLove = asyncHandler(async (req,res)=>{
+const toggleLove = asyncHandler(async (req,res)=>{
   const {slug} = req.params;
   if(!slug){
     throw new ApiError(401,"Blog slug does not matched")
@@ -96,9 +96,28 @@ export const toggleLove = asyncHandler(async (req,res)=>{
   )
 })
 
+const deleteComment = asyncHandler(async (req,res)=>{
+  const {userId} = req.user._id;
+  if(!userId){
+    throw new ApiError(401,"Unauthorised User")
+  }
+  const {commentId} = req.params;
+  if(!commentId){
+    throw new ApiError(404,"Comment not found")
+  }
 
+  const comment = await Comment.findByIdAndDelete(commentId);
+
+  if(!comment){
+    throw new ApiError(400,"Error while deleting the comment")
+  }
+
+  return res.status(200)
+  .json(new ApiResponse(200,comment,"Comment delete successfully"))
+})
 export{
   createComment,
   getCommentsByBlog,
-  toggleLove
+  toggleLove,
+  deleteComment
 }

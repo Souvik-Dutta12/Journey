@@ -3,18 +3,36 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOncloudinary } from "../utils/cloudinary.js";
+import { generateBlogDescription } from "../utils/generateBlogDescription.js";
 
-export const createBlog = asyncHandler(async (req, res) => {
+const createBlog = asyncHandler(async (req, res) => {
 
-  const { title, slug, shortDescription, description, authorName } = req.body;
+  const { title, slug, shortDescription, description, authorName, useAIDescription } = req.body;
 
   if (
-    [title, slug, shortDescription, description, authorName].some((field) => field?.trim() === "")
+    [title, slug, shortDescription, authorName].some((field) => field?.trim() === "")
   ) {
-    throw new ApiError(400, "All fields are requried")
+    throw new ApiError(400, "Title, slug, shortDescription and authorName are required");
   }
 
-  const coverImageLocalPath = req.files?.coverImage[0]?.path;
+  let finalDescription = description;
+
+  if (useAIDescription === "true" || useAIDescription === true) {
+    if (!title || !shortDescription) {
+      throw new ApiError(400, "Title and shortDescription are required for AI to generate description");
+    }
+
+    finalDescription = await generateBlogDescription(title, shortDescription);
+    if (!finalDescription) {
+      throw new ApiError(500, "AI failed to generate description");
+    }
+  } else {
+    if (!description?.trim()) {
+      throw new ApiError(400, "Description is required if not using AI");
+    }
+  }
+
+  const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
   if (!coverImageLocalPath) {
     throw new ApiError(400, "Cover image file is required");
   }
@@ -29,25 +47,16 @@ export const createBlog = asyncHandler(async (req, res) => {
     title,
     slug,
     shortDescription,
-    description,
+    description: finalDescription,
     authorName,
     coverImage: coverImage?.url || "",
   });
 
-  const createdBlog = await Blog.findById(blog._id);
-
-  if (!createdBlog) {
-    throw new ApiError(404, "Blog not found");
-  }
-
-  return res.status(200)
-    .json(
-      new ApiResponse(200, createdBlog, "Blog created successfully")
-    )
+  return res.status(201).json(new ApiResponse(201, blog, "Blog created successfully"));
 
 })
 
-export const getAllBlog = asyncHandler(async (req, res) => {
+const getAllBlog = asyncHandler(async (req, res) => {
   const {
     page = 1,
     limit = 12,
@@ -87,7 +96,7 @@ export const getAllBlog = asyncHandler(async (req, res) => {
   );
 });
 
-export const getBlogBySlug = asyncHandler(async (req, res) => {
+const getBlogBySlug = asyncHandler(async (req, res) => {
   const { slug } = req.params;
 
   const currentBlog = await Blog.findOne({ slug });
@@ -102,7 +111,7 @@ export const getBlogBySlug = asyncHandler(async (req, res) => {
     )
 })
 
-export const updateBlogDetails = asyncHandler(async (req, res) => {
+const updateBlogDetails = asyncHandler(async (req, res) => {
   const { title, slug, shortDescription, description, authorName } = req.body;
   if (!title || !slug || !shortDescription || !description || !authorName) {
     throw new ApiError(400, "any one of the fields should upadte to update the blog")
@@ -128,7 +137,7 @@ export const updateBlogDetails = asyncHandler(async (req, res) => {
     )
 })
 
-export const updatBlogCoverImage = asyncHandler(async (req, res) => {
+const updatBlogCoverImage = asyncHandler(async (req, res) => {
 
   const { slug } = req.params;
 
@@ -164,7 +173,7 @@ export const updatBlogCoverImage = asyncHandler(async (req, res) => {
     )
 })
 
-export const deleteBlog = asyncHandler(async (req, res) => {
+const deleteBlog = asyncHandler(async (req, res) => {
   const { slug } = req.params;
 
   if (!slug) {
@@ -183,7 +192,7 @@ export const deleteBlog = asyncHandler(async (req, res) => {
     )
 })
 
-export const toggleStatus = asyncHandler(async (req, res) => {
+const toggleStatus = asyncHandler(async (req, res) => {
   const { slug } = req.params;
 
   if (!slug) {
@@ -209,7 +218,7 @@ export const toggleStatus = asyncHandler(async (req, res) => {
     )
 })
 
-export const getBlogsByTags = asyncHandler(async (req, res) => {
+const getBlogsByTags = asyncHandler(async (req, res) => {
   const { tags } = req.query;
 
   if (!tags) {
