@@ -4,7 +4,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export const generateBlogDescription = async (title, shortDescription) => {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const prompt = `Write a detailed 20 to 30 line paragraph wise blog description based on the following title and short description:\n\nTitle: ${title}\nShort Description: ${shortDescription}`;
 

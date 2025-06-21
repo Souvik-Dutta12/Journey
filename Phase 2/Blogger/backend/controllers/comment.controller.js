@@ -4,37 +4,46 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-const createComment = asyncHandler(async (req,res)=>{
-  const {slug} = req.params;
-  const {userId} = req.user?._id;
-  const {content} = req.body;
-  if(!slug){
+const createComment = asyncHandler(async (req, res) => {
+  const { slug } = req.params;
+  const userId = req.user?._id; // ✅ Fix here
+  const { content } = req.body;
+
+  if (!slug) {
+    throw new ApiError(404, "Blog not found");
+  }
+
+  const blog = await Blog.findOne({slug});
+  const blogId = blog?._id;
+
+  if(!blogId){
     throw new ApiError(404,"Blog not found");
   }
 
-  if(!userId){
-    throw new ApiError(401,"Unauthorized User");
+  if (!userId) {
+    throw new ApiError(401, "Unauthorized User");
   }
 
-  if(!content){
-    throw new ApiError(400,"Content is required");
+  if (!content) {
+    throw new ApiError(400, "Content is required");
   }
 
   const comment = await Comment.create({
-    content
+    content,
+    user: userId,       // Make sure to store the userId in the comment
+    blog: blogId      // Optionally, store the slug or blog ID here
   });
 
   const createdComment = await Comment.findById(comment._id);
 
-  if(!createdComment){
-    throw new ApiError(404,"Comment not found");
+  if (!createdComment) {
+    throw new ApiError(404, "Comment not found");
   }
 
-  return res.status(200)
-  .json(
-    new ApiResponse(200,createComment,"Comment created successfully")
-  )
-})
+  return res.status(200).json(
+    new ApiResponse(200, createdComment, "Comment created successfully") // ✅ Fix here too
+  );
+});
 
 const getCommentsByBlog = asyncHandler(async (req,res)=>{
   const {slug} = req.params;
@@ -61,43 +70,44 @@ const getCommentsByBlog = asyncHandler(async (req,res)=>{
   )
 })
 
-const toggleLove = asyncHandler(async (req,res)=>{
-  const {slug} = req.params;
-  if(!slug){
-    throw new ApiError(401,"Blog slug does not matched")
-  }
-
-  const blog = await Blog.findOne({slug});
-
-  const blogId = blog?._id;
-
-  if(!blogId){
-    throw new ApiError(404,"Blog not found")
-  }
-
+const toggleLove = asyncHandler(async (req, res) => {
+  const { commentId } = req.params;
   const userId = req.user?._id;
-  if(!userId){
-    throw new ApiError(400,"Unauthorised User")
+
+  if (!commentId) {
+    throw new ApiError(400, "Comment ID is required");
   }
 
-  const alreadyLoved = blog.loves.includes(userId);
-
-  if(alreadyLoved){
-    blog.loves = blog.loves.filter(id => id.toString() !== userId.toString());
-  }else{
-    blog.loves.push(userId);
+  if (!userId) {
+    throw new ApiError(401, "Unauthorized User");
   }
 
-  await blog.save();
+  const comment = await Comment.findById(commentId);
+  if (!comment) {
+    throw new ApiError(404, "Comment not found");
+  }
 
-  return res.status(200)
-  .json(
-    new ApiResponse(200, { loved: !alreadyLoved, loveCount: blog.loves.length },"Love satus toggled")
-  )
-})
+  const alreadyLoved = comment.loves.some(id => id.toString() === userId.toString());
+
+  if (alreadyLoved) {
+    comment.loves = comment.loves.filter(id => id.toString() !== userId.toString());
+  } else {
+    comment.loves.push(userId);
+  }
+
+  await comment.save();
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      { loved: !alreadyLoved, loveCount: comment.loves.length },
+      "Comment love status toggled"
+    )
+  );
+});
 
 const deleteComment = asyncHandler(async (req,res)=>{
-  const {userId} = req.user._id;
+  const userId = req.user?._id;
   if(!userId){
     throw new ApiError(401,"Unauthorised User")
   }

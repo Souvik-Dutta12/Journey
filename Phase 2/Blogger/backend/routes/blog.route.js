@@ -16,6 +16,8 @@ const router = Router();
 
 router.route("/blog").get(getAllBlog)
 router.route("/blog/:slug").get(getBlogBySlug)
+
+
 router.route("/tags").get(getBlogsByTags)
 
 //secured route

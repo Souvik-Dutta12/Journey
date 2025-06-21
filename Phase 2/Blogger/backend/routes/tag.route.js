@@ -11,6 +11,6 @@ const router = Router();
 router.route("/").get(getAllTags)
 
 //secured routes
-router.route("/tag/create").post(verifyJWT,createTag)
+router.route("/tag/:slug/create").post(verifyJWT,createTag)
 
 export default router;

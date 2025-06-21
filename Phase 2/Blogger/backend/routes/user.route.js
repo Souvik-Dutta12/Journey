@@ -25,6 +25,8 @@ router.route("/user/refresh-token").post(refreshAccessToken)
 router.route("/user/profile-image").patch(verifyJWT,upload.single("profileImage"),updateProfieImage)
 router.route("/user/update-profile").patch(verifyJWT,updateProfileDetails)
 router.route("/user/:userId").get(verifyJWT,getUserById)
+
+
 router.route("/user/:userId/blogs").get(verifyJWT,getBlogsByUser)
 
 export default router

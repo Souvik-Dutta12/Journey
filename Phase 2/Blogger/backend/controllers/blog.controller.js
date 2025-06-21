@@ -4,6 +4,8 @@ import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOncloudinary } from "../utils/cloudinary.js";
 import { generateBlogDescription } from "../utils/generateBlogDescription.js";
+import { User } from "../models/user.model.js";
+import { Tag } from "../models/tag.model.js";
 
 const createBlog = asyncHandler(async (req, res) => {
 
@@ -21,7 +23,6 @@ const createBlog = asyncHandler(async (req, res) => {
     if (!title || !shortDescription) {
       throw new ApiError(400, "Title and shortDescription are required for AI to generate description");
     }
-
     finalDescription = await generateBlogDescription(title, shortDescription);
     if (!finalDescription) {
       throw new ApiError(500, "AI failed to generate description");
@@ -32,12 +33,12 @@ const createBlog = asyncHandler(async (req, res) => {
     }
   }
 
-  const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+  const coverImageLocalPath = req.file?.path;
   if (!coverImageLocalPath) {
     throw new ApiError(400, "Cover image file is required");
   }
 
-  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+  const coverImage = await uploadOncloudinary(coverImageLocalPath);
 
   if (!coverImage) {
     throw new ApiError(400, "Cover image upload failed");
@@ -50,7 +51,16 @@ const createBlog = asyncHandler(async (req, res) => {
     description: finalDescription,
     authorName,
     coverImage: coverImage?.url || "",
+    user: req.user?._id,
   });
+
+  if(blog){
+    const user = await User.findById(req.user?._id);
+    if(user){
+      user.blogs.push(blog._id);
+      await user.save();
+    }
+  }
 
   return res.status(201).json(new ApiResponse(201, blog, "Blog created successfully"));
 
@@ -112,8 +122,13 @@ const getBlogBySlug = asyncHandler(async (req, res) => {
 })
 
 const updateBlogDetails = asyncHandler(async (req, res) => {
-  const { title, slug, shortDescription, description, authorName } = req.body;
-  if (!title || !slug || !shortDescription || !description || !authorName) {
+
+  const { slug } = req.params
+  if(!slug){
+    throw new ApiError(404,"blog not found")
+  }
+  const { title, newSlug, shortDescription, description, authorName } = req.body;
+  if (!title && !newSlugslug && !shortDescription && !description && !authorName) {
     throw new ApiError(400, "any one of the fields should upadte to update the blog")
   }
 
@@ -122,7 +137,7 @@ const updateBlogDetails = asyncHandler(async (req, res) => {
     {
       $set: {
         title,
-        slug,
+        slug: newSlug,
         shortDescription,
         description,
         authorName,
@@ -221,21 +236,25 @@ const toggleStatus = asyncHandler(async (req, res) => {
 const getBlogsByTags = asyncHandler(async (req, res) => {
   const { tags } = req.query;
 
-  if (!tags) {
-    throw new ApiError(400, "Tags are required in query parameters");
+ 
+  if (!tags || typeof tags !== "string") {
+    throw new ApiError(400, "Tags are required");
   }
 
-  // Split tags into an array if it's a comma-separated string
-  const tagList = tags.split(",").map(tag => tag.trim().toLowerCase());
+  const tagNames = tags.split(",").map(tag => tag.trim().toLowerCase());
 
-  const blogs = await Blog.find({
-    tags: { $in: tagList }
-  });
+  // 1. Find Tag IDs from names
+  const tagDocs = await Tag.find({ name: { $in: tagNames } });
+  const tagIds = tagDocs.map(tag => tag._id);
+
+  // 2. Use IDs to query blogs
+  const blogs = await Blog.find({ tags: { $in: tagIds } });
 
   return res.status(200).json(
     new ApiResponse(200, blogs, "Blogs fetched successfully by tags")
   );
 });
+
 
 export {
   createBlog,

@@ -2,8 +2,19 @@ import { Tag } from "../models/tag.model.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import {getGeminiColorForTag} from "../utils/getColorFromAi.js"
+import { Blog } from "../models/blog.model.js"; 
 
 const createTag = asyncHandler(async (req,res)=>{
+
+  const { slug } = req.params;
+  if(!slug){
+    throw new ApiError (400, "slug is required");
+  }
+
+  const blog = await Blog.findOne({slug});
+  const blogId = blog?._id;
+
   const { name } = req.body;
 
   if (!name) {
@@ -21,6 +32,12 @@ const createTag = asyncHandler(async (req,res)=>{
 
   const tag = await Tag.create({ name: cleanName, color });
 
+  tag.blogs.push(blogId);
+
+  await tag.save();
+  blog.tags.push(tag._id);
+  await blog.save();
+  
   return res.status(201).json(
     new ApiResponse(201, tag, "Tag created with Gemini-generated color")
   );

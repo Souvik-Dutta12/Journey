@@ -25,6 +25,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
 const signUpUser = asyncHandler(
     async (req, res) => {
         // check for existing email/username
+        
         const { email, password, username } = req.body;
 
         if (!email || !password || !username) {
@@ -40,11 +41,12 @@ const signUpUser = asyncHandler(
             throw new ApiError(409, "User already exists");
         }
 
-        const user = User.create({
+        const user = await User.create({
             username: username.toLowerCase(),
             email,
             password,
         })
+
 
         const createdUser = await User.findById(user._id).select("-password -refreshToken");
 
@@ -73,7 +75,7 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new ApiError(404, "User not found");
     }
     // compare password
-    const isPasswordValid = await User.isPasswordValid(password);
+    const isPasswordValid = await user.isPasswordCorrect(password);
 
     if (!isPasswordValid) {
         throw new ApiError(401, "Invalid user credentials");
@@ -225,7 +227,7 @@ const getUserById = asyncHandler(async (req, res) => {
 const updateProfileDetails = asyncHandler(async (req, res) => {
     const { username, email } = req.body;
 
-    if (!username || !email) {
+    if (!username && !email) {
         throw new ApiError(400, "All fields are required");
     }
 
@@ -254,10 +256,14 @@ const getBlogsByUser = asyncHandler(async (req, res) => {
         throw new ApiError(404, "User not found");
     }
 
+    if (!mongoose.Types.ObjectId.isValid(userID)) {
+        throw new ApiError(400, "Invalid user ID");
+    }
+
     const userWithBlogs = await User.aggregate([
         {
             $match: {
-                _id: mongoose.Types.ObjectId(userID),
+                _id: new mongoose.Types.ObjectId(userID),
             },
         },
         {
@@ -290,18 +296,17 @@ const getBlogsByUser = asyncHandler(async (req, res) => {
 
     const user = userWithBlogs[0];
 
-    // If user exists but has no blogs
     if (!user.blogs || user.blogs.length === 0) {
         return res.status(200).json(
             new ApiResponse(200, [], "User has no blogs yet")
         );
     }
 
-    return res.status(200)
-        .json(
-            new ApiResponse(200, user.blogs, "Successfully fetched all blogs")
-        )
-})
+    return res.status(200).json(
+        new ApiResponse(200, user.blogs, "Successfully fetched all blogs")
+    );
+});
+
 
 
 export {
