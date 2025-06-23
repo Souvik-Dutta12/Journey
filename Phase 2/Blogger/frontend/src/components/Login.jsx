@@ -1,14 +1,54 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { HoverBorderGradient } from "./ui/hover-border-gradient";
 import { BackgroundBeams } from "./ui/background-beams";
+import { useAppContext } from '../context/AppContext';
+import { Link } from "react-router-dom"; // ✅ Import Link
+import {toast} from 'react-toastify';
 
 const Login = () => {
+  const { axios, setToken,navigate } = useAppContext();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const res = await axios.post("/users/login", {
+      email,
+      password,
+    });
+    const token = res?.data?.data?.accessToken;
+    if (token) {
+      // ✅ Save token
+      setToken(token);
+      localStorage.setItem("token", token);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+      // ✅ Show success toast
+      toast.success("Logged in successfully!");
+
+      // ✅ Navigate after short delay (optional)
+      navigate("/"); // Delay so user sees the toast
+    } else {
+      toast.error("Login failed");
+    }
+
+  } catch (err) {
+    toast.error("Login failed!");
+  }
+};
+
+
   return (
     <div className="md:min-h-screen z-20 md:w-screen sm:w-[85vw] flex items-center justify-center px-4">
       <div className="w-full z-40 max-w-md bg-transparent rounded-xl shadow-md md:p-10 sm:p-5 md:mt-29 space-y-5">
-        <h2 className="font-bold  text-center relative z-10 text-2xl sm:text-5xl md:text-6xl lg:text-4xl  bg-clip-text  text-transparent bg-gradient-to-b from-white to-neutral-500 font-sans leading-tight ">Login to Blogger</h2>
+        <h2 className="font-bold text-center relative z-10 text-2xl sm:text-5xl md:text-6xl lg:text-4xl bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-500 font-sans leading-tight">
+          Login to Blogger
+        </h2>
 
-        <form className="-mt-6 w-full flex flex-col gap-3 p-6">
+        <form className="-mt-6 w-full flex flex-col gap-3 p-6" onSubmit={handleSubmit}>
           {/* Email Field */}
           <div className='flex flex-col gap-1'>
             <label htmlFor="email" className="block text-md font-bold text-white">
@@ -20,6 +60,8 @@ const Login = () => {
               name="email"
               placeholder='Enter email'
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full text-md font-normal px-4 py-2 border rounded-xl bg-zinc-900 border-zinc-600 focus:outline-none focus:ring-0 focus:ring-zinc-500"
             />
           </div>
@@ -35,6 +77,8 @@ const Login = () => {
               name="password"
               placeholder='Enter password'
               required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full text-md font-normal px-4 py-2 border rounded-xl bg-zinc-900 border-zinc-600 focus:outline-none focus:ring-0 focus:ring-zinc-500"
             />
           </div>
@@ -49,33 +93,36 @@ const Login = () => {
               />
               Remember me
             </label>
-            <a href="#" className="text-[#7fcfec] hover:underline duration-300">
+            <Link to="/forgot-password" className="text-[#7fcfec] hover:underline duration-300">
               Forgot password?
-            </a>
+            </Link>
           </div>
 
           {/* Submit Button */}
           <HoverBorderGradient
-                      containerClassName="rounded-full w-full mt-2"
-                      as="button"
-                      className=" dark:bg-black cursor-pointer bg-white text-black dark:text-white flex items-center space-x-2"
-                    >
-          
-                      <span className='hover:text-[#7fcfec] duration-300 flex items-center justify-center gap-1'>Log in<i className="ri-arrow-right-line"></i></span>
-                    </HoverBorderGradient>
+            onClick={(e)=>handleSubmit(e)}
+            containerClassName="rounded-full w-full mt-2"
+            as="button"
+            className="dark:bg-black cursor-pointer bg-white text-black dark:text-white flex items-center space-x-2"
+          >
+            <span className='hover:text-[#7fcfec] duration-300 flex items-center justify-center gap-1'>
+              Log in<i className="ri-arrow-right-line"></i>
+            </span>
+          </HoverBorderGradient>
         </form>
 
         {/* Sign Up Redirect */}
         <p className="text-center text-md text-neutral-500 -mt-4">
           Don’t have an account?{' '}
-          <a href="/signup" className="text-[#7fcfec] hover:underline">
+          <Link to="/signup" className="text-[#7fcfec] hover:underline">
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
+
       <div className="absolute inset-0 -z-10">
-    <BackgroundBeams />
-  </div>
+        <BackgroundBeams />
+      </div>
     </div>
   );
 };

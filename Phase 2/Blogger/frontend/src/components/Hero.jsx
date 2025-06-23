@@ -4,6 +4,7 @@ import { Button } from "./ui/moving-border";
 import { Link } from 'react-router';
 
 const Hero = () => {
+    
     return (
         <div className="md:h-screen h-1/2 md:w-full sm:w-[90vw] rounded-md bg-neutral-950 relative flex flex-col items-center justify-center antialiased">
             <div className="max-w-4xl mx-auto lg:p-4 md:p-6 text-center ">

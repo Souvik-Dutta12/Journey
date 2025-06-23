@@ -5,13 +5,38 @@ import { cn } from "../lib/utils";
 import { Link } from 'react-router-dom';
 import { HoverBorderGradient } from "./ui/hover-border-gradient";
 import { Menu as MenuIcon, X } from 'lucide-react';
+import { useAppContext } from '../context/AppContext';
+import { toast } from 'react-toastify';
 
 
 const Nav = ({ className }) => {
     const [active, setActive] = useState(null);
     const [sidebarOpen, setSidebarOen] = useState(false);
 
+    const { axios,navigate, token,setToken } = useAppContext();
+
     const toggleSidebar = () => setSidebarOen(!sidebarOpen);
+
+    const handleLogout = async () => {
+  try {
+    const res = await axios.post("/users/user/logout"); // or wherever your logout endpoint is
+
+    if (res.data.success) {
+      toast.success("Logged out successfully");
+
+      // Clear auth state from context
+      setToken(null);   // if you're storing token in context
+        localStorage.removeItem("token"); // Clear token from local storage
+      // Redirect to login or home
+      navigate("/login");
+    } else {
+      toast.error(res.data.message || "Logout failed");
+    }
+  } catch (error) {
+    toast.error("Something went wrong while logging out");
+    console.error(error);
+  }
+};
 
     return (
         <>
@@ -83,34 +108,52 @@ const Nav = ({ className }) => {
 
                             </div>
 
-                            <div className='flex items-center justify-center space-x-4'>
-                                <Link to={"/signup"}>
-                                    <div className=" flex justify-center text-center">
-                                        <HoverBorderGradient
-                                            containerClassName="rounded-full"
-                                            as="button"
-                                            className="dark:bg-black cursor-pointer bg-white text-black dark:text-white flex items-center space-x-2"
-                                        >
-
-                                            <span className='hover:text-[#7fcfec] duration-300'>Sign up</span>
-                                        </HoverBorderGradient>
+                            {
+                                token ? (
+                                    // When token exists → Show Logout
+                                    <div className='flex items-center justify-center space-x-4'>
+                                        
+                                            <div className="flex justify-center text-center">
+                                                <HoverBorderGradient
+                                                    containerClassName="rounded-full"
+                                                    as="button"
+                                                    onClick={()=>handleLogout()}
+                                                    className="dark:bg-black cursor-pointer bg-white text-black dark:text-white flex items-center space-x-2"
+                                                >
+                                                    <span className='hover:text-[#7fcfec] duration-300'>Log out</span>
+                                                </HoverBorderGradient>
+                                            </div>
+                                        
                                     </div>
-                                </Link>
-                                <Link to={"/login"}>
-                                    <div className=" flex justify-center text-center">
-                                        <HoverBorderGradient
-                                            containerClassName="rounded-full"
-                                            as="button"
-                                            className="dark:bg-black cursor-pointer bg-white text-black dark:text-white flex items-center space-x-2"
-                                        >
-
-                                            <span className='hover:text-[#7fcfec] duration-300'>Log in</span>
-                                        </HoverBorderGradient>
+                                ) : (
+                                    // When token doesn't exist → Show Login and Signup
+                                    <div className='flex items-center justify-center space-x-4'>
+                                        <Link to="/signup">
+                                            <div className="flex justify-center text-center">
+                                                <HoverBorderGradient
+                                                    containerClassName="rounded-full"
+                                                    as="button"
+                                                    className="dark:bg-black cursor-pointer bg-white text-black dark:text-white flex items-center space-x-2"
+                                                >
+                                                    <span className='hover:text-[#7fcfec] duration-300'>Sign up</span>
+                                                </HoverBorderGradient>
+                                            </div>
+                                        </Link>
+                                        <Link to="/login">
+                                            <div className="flex justify-center text-center">
+                                                <HoverBorderGradient
+                                                    containerClassName="rounded-full"
+                                                    as="button"
+                                                    className="dark:bg-black cursor-pointer bg-white text-black dark:text-white flex items-center space-x-2"
+                                                >
+                                                    <span className='hover:text-[#7fcfec] duration-300'>Log in</span>
+                                                </HoverBorderGradient>
+                                            </div>
+                                        </Link>
                                     </div>
-                                </Link>
+                                )
+                            }
 
-
-                            </div>
                         </div>
                     </div>
                 </Menu>
@@ -136,10 +179,16 @@ const Nav = ({ className }) => {
                     <Link to="/interface-design" onClick={toggleSidebar} className="block hover:text-[#7fcfec]">Products</Link>
                     <Link to="/seo" onClick={toggleSidebar} className="block hover:text-[#7fcfec]">Pricing</Link>
                     <Link to="/collection" onClick={toggleSidebar} className="block hover:text-[#7fcfec]">Collection</Link>
-                    <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
-                        <Link to="/signup" onClick={toggleSidebar} className="block border w-1/3 px-2 py-2 text-center rounded-full hover:text-[#7fcfec]">Sign up</Link>
-                        <Link to="/login" onClick={toggleSidebar} className="block border w-1/3 px-2 py-2 text-center rounded-full hover:text-[#7fcfec]">Log in</Link>
+                    {token ? (
+                        <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
+                        <button onClick={toggleSidebar} className="block cursor-pointer border w-1/3 px-2 py-2 text-center rounded-full hover:text-[#7fcfec]">Log out</button>
                     </div>
+                    ) :(
+                        <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
+                        <Link to="/signup" onClick={toggleSidebar} className="block cursor-pointer border w-1/3 px-2 py-2 text-center rounded-full hover:text-[#7fcfec]">Sign up</Link>
+                        <Link to="/login" onClick={toggleSidebar} className="block cursor-pointer border w-1/3 px-2 py-2 text-center rounded-full hover:text-[#7fcfec]">Log in</Link>
+                    </div>
+                    )}
                 </div>
             )}
 

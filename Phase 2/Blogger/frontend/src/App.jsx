@@ -1,8 +1,8 @@
 import React from 'react'
 import Nav from './components/Nav'
 
-import {Route,Router,Routes} from 'react-router-dom'
-import  Home  from './pages/Home'
+import { Route, Router, Routes } from 'react-router-dom'
+import Home from './pages/Home'
 import Signup from './components/Signup'
 import Login from './components/Login'
 import CollectionHero from './pages/CollectionHero'
@@ -10,25 +10,41 @@ import WriteBlog from './pages/WriteBlog'
 import ReadBlog from './pages/ReadBlog'
 import Total from './pages/Total'
 import Draft from './pages/Draft'
+import { ToastContainer } from 'react-toastify';
+import { useAppContext } from './context/AppContext'
 
 const App = () => {
+
+  const { token } = useAppContext();
   return (
     <div className='w-screen h-auto '>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        pauseOnHover
+        theme='dark'
+        />
       <Nav />
 
       <Routes>
-        <Route path='/' element={<Home />}/>
+        <Route path='/' element={<Home />} />
         <Route path='/signup' element={<Signup />} />
         <Route path='/login' element={<Login />} />
         <Route path='/collection' element={<CollectionHero />} />
-        <Route path='/writeblog' element={<WriteBlog />}/>
-        <Route path='/readblog' element={<ReadBlog />}/>
-        <Route path='/total' element={<Total />}/>
-        <Route path='/draft' element={<Draft />}/>
+        <Route path='/writeblog' element={<WriteBlog />} />
+        <Route path="/blogs/blog/:slug" element={<ReadBlog />} />
+        <Route path='/total' element={<Total />} />
+        <Route path='/draft' element={<Draft />} />
+        <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Routes>
- 
 
-      
+
+
     </div>
   )
 }
