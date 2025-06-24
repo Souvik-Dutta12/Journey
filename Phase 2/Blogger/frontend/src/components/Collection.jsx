@@ -8,6 +8,8 @@ import { toast } from 'react-toastify';
 const Collection = () => {
   const [menu] = useState("");
   const { blogs, filter,navigate } = useAppContext();
+  const token = localStorage.getItem("token");
+  const user = localStorage.getItem("user");
   
 
   // ✅ Filter blogs based on context and menu tag
@@ -22,8 +24,7 @@ const Collection = () => {
 
   // ✅ Load more handler: check login
   const handleLoadMore = () => {
-    const token = localStorage.getItem("token");
-    if (token) {
+    if (token && user) {
       navigate("/collection");
     } else {
       navigate("/login");
@@ -38,7 +39,9 @@ const Collection = () => {
       </h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center mt-10 items-stretch">
-        {previewBlogs.map((blog, index) => (
+        {previewBlogs
+        .filter((blog) => blog.status === "published")
+        .map((blog, index) => (
           <CardContainer key={index} className="inter-var">
             <CardBody className="bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full sm:w-[22rem] h-[500px] flex flex-col rounded-xl p-6 border">
               

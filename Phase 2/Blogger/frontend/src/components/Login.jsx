@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"; // ✅ Import Link
 import {toast} from 'react-toastify';
 
 const Login = () => {
-  const { axios, setToken,navigate } = useAppContext();
+  const { axios, setToken,navigate,setUser } = useAppContext();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,10 +20,13 @@ const Login = () => {
       password,
     });
     const token = res?.data?.data?.accessToken;
+    const {user} = res.data.data;
     if (token) {
       // ✅ Save token
+      setUser(user);
       setToken(token);
       localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user))
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
       // ✅ Show success toast

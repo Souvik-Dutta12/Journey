@@ -13,7 +13,7 @@ const Nav = ({ className }) => {
     const [active, setActive] = useState(null);
     const [sidebarOpen, setSidebarOen] = useState(false);
 
-    const { axios,navigate, token,setToken } = useAppContext();
+    const { axios,navigate, token,setToken,setUser,user } = useAppContext();
 
     const toggleSidebar = () => setSidebarOen(!sidebarOpen);
 
@@ -23,10 +23,12 @@ const Nav = ({ className }) => {
 
     if (res.data.success) {
       toast.success("Logged out successfully");
-
+        setUser(null);
       // Clear auth state from context
       setToken(null);   // if you're storing token in context
         localStorage.removeItem("token"); // Clear token from local storage
+        localStorage.removeItem("user")
+        delete axios.defaults.headers.common["Authorization"];
       // Redirect to login or home
       navigate("/login");
     } else {
@@ -109,7 +111,7 @@ const Nav = ({ className }) => {
                             </div>
 
                             {
-                                token ? (
+                                user ? (
                                     // When token exists → Show Logout
                                     <div className='flex items-center justify-center space-x-4'>
                                         
@@ -169,7 +171,7 @@ const Nav = ({ className }) => {
                     <h1 className="text-2xl font-black">blogger</h1>
                 </Link>
                 <button onClick={toggleSidebar}>
-                    {sidebarOpen ? <X className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
+                    {sidebarOpen ? <X className="w-6 h-6 cursor-pointer" /> : <MenuIcon className="w-6 h-6 cursor-pointer" />}
                 </button>
             </div>
             {sidebarOpen && (
@@ -179,9 +181,9 @@ const Nav = ({ className }) => {
                     <Link to="/interface-design" onClick={toggleSidebar} className="block hover:text-[#7fcfec]">Products</Link>
                     <Link to="/seo" onClick={toggleSidebar} className="block hover:text-[#7fcfec]">Pricing</Link>
                     <Link to="/collection" onClick={toggleSidebar} className="block hover:text-[#7fcfec]">Collection</Link>
-                    {token ? (
+                    {user ? (
                         <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
-                        <button onClick={toggleSidebar} className="block cursor-pointer border w-1/3 px-2 py-2 text-center rounded-full hover:text-[#7fcfec]">Log out</button>
+                        <button onClick={handleLogout} className="block cursor-pointer border w-1/3 px-2 py-2 text-center rounded-full hover:text-[#7fcfec]">Log out</button>
                     </div>
                     ) :(
                         <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-2">

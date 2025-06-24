@@ -6,65 +6,113 @@ import { uploadOncloudinary } from "../utils/cloudinary.js";
 import { generateBlogDescription } from "../utils/generateBlogDescription.js";
 import { User } from "../models/user.model.js";
 import { Tag } from "../models/tag.model.js";
+import { getGeminiColorForTag } from "../utils/getColorFromAi.js";
+
 
 const createBlog = asyncHandler(async (req, res) => {
+  try {
+    const {
+      title,
+      slug,
+      shortDescription,
+      description,
+      authorName,
+      status = "draft"
+    } = req.body;
 
-  const { title, slug, shortDescription, description, authorName, useAIDescription } = req.body;
+    // ✅ Normalize tag names
+    let rawTags = req.body.tags;
+    const tagNames = Array.isArray(rawTags)
+      ? rawTags
+      : rawTags
+        ? [rawTags]
+        : [];
 
-  if (
-    [title, slug, shortDescription, authorName].some((field) => field?.trim() === "")
-  ) {
-    throw new ApiError(400, "Title, slug, shortDescription and authorName are required");
-  }
-
-  let finalDescription = description;
-
-  if (useAIDescription === "true" || useAIDescription === true) {
-    if (!title || !shortDescription) {
-      throw new ApiError(400, "Title and shortDescription are required for AI to generate description");
+    if ([title, slug, shortDescription, authorName].some(field => field?.trim() === "")) {
+      throw new ApiError(400, "Title, slug, shortDescription and authorName are required");
     }
-    finalDescription = await generateBlogDescription(title, shortDescription);
-    if (!finalDescription) {
-      throw new ApiError(500, "AI failed to generate description");
+
+
+    // ✅ Upload cover image
+    const coverImageLocalPath = req.file?.path;
+    if (!coverImageLocalPath) {
+      throw new ApiError(400, "Cover image file is required");
     }
-  } else {
-    if (!description?.trim()) {
-      throw new ApiError(400, "Description is required if not using AI");
+
+    const coverImage = await uploadOncloudinary(coverImageLocalPath);
+    if (!coverImage) {
+      throw new ApiError(400, "Cover image upload failed");
     }
-  }
 
-  const coverImageLocalPath = req.file?.path;
-  if (!coverImageLocalPath) {
-    throw new ApiError(400, "Cover image file is required");
-  }
+    // ✅ Convert tag names to ObjectIds
+    const tagIds = [];
+    for (const tagName of tagNames) {
+      const cleanName = tagName.trim().toLowerCase();
 
-  const coverImage = await uploadOncloudinary(coverImageLocalPath);
+      // ✅ Check if tag already exists
+      let tag = await Tag.findOne({ name: cleanName });
 
-  if (!coverImage) {
-    throw new ApiError(400, "Cover image upload failed");
-  }
+      if (!tag) {
+        // ✅ Create new tag if it doesn't exist
+        const color = await getGeminiColorForTag(cleanName);
+        tag = await Tag.create({ name: cleanName, color });
+      }
 
-  const blog = await Blog.create({
-    title,
-    slug,
-    shortDescription,
-    description: finalDescription,
-    authorName,
-    coverImage: coverImage?.url || "",
-    user: req.user?._id,
-  });
+      tagIds.push(tag._id); // ✅ Always push the _id, new or existing
+    }
 
-  if(blog){
+
+    // ✅ Create blog
+    const blog = await Blog.create({
+      title,
+      slug,
+      shortDescription,
+      description,
+      authorName,
+      coverImage: coverImage?.url || "",
+      user: req.user?._id,
+      status: status === "published" ? "published" : "draft",
+      tags: tagIds
+    });
+
+    // ✅ Update user
     const user = await User.findById(req.user?._id);
-    if(user){
+    if (user) {
       user.blogs.push(blog._id);
       await user.save();
     }
+
+    return res.status(201).json(
+      new ApiResponse(201, blog, "Blog created successfully")
+    );
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message
+    });
+  }
+});
+
+const generateAIDescriptionOnly = asyncHandler(async (req, res) => {
+  const { title, shortDescription } = req.body;
+
+  if (!title || !shortDescription) {
+    throw new ApiError(400, "Title and shortDescription are required");
   }
 
-  return res.status(201).json(new ApiResponse(201, blog, "Blog created successfully"));
+  const description = await generateBlogDescription(title, shortDescription);
 
-})
+  if (!description) {
+    throw new ApiError(500, "Failed to generate description");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, { description }, "AI description generated"));
+});
+
+
 
 const getAllBlog = asyncHandler(async (req, res) => {
   const {
@@ -109,7 +157,7 @@ const getAllBlog = asyncHandler(async (req, res) => {
 const getBlogBySlug = asyncHandler(async (req, res) => {
   const { slug } = req.params;
 
-  const currentBlog = await Blog.findOne({ slug });
+  const currentBlog = await Blog.findOne({ slug }).populate("tags");
 
   if (!currentBlog) {
     throw new ApiError(404, "Blog not found");
@@ -124,8 +172,8 @@ const getBlogBySlug = asyncHandler(async (req, res) => {
 const updateBlogDetails = asyncHandler(async (req, res) => {
 
   const { slug } = req.params
-  if(!slug){
-    throw new ApiError(404,"blog not found")
+  if (!slug) {
+    throw new ApiError(404, "blog not found")
   }
   const { title, newSlug, shortDescription, description, authorName } = req.body;
   if (!title && !newSlugslug && !shortDescription && !description && !authorName) {
@@ -234,26 +282,41 @@ const toggleStatus = asyncHandler(async (req, res) => {
 })
 
 const getBlogsByTags = asyncHandler(async (req, res) => {
-  const { tags } = req.query;
+  const { tags, page = 1, limit = 12, status } = req.query;
 
- 
-  if (!tags || typeof tags !== "string") {
-    throw new ApiError(400, "Tags are required");
+  const filter = {};
+
+  // If tags are provided and valid
+  if (tags && typeof tags === "string") {
+    const tagNames = tags.split(",").map(tag => tag.trim().toLowerCase());
+    const tagDocs = await Tag.find({ name: { $in: tagNames } });
+    const tagIds = tagDocs.map(tag => tag._id);
+
+    filter.tags = { $in: tagIds };
   }
 
-  const tagNames = tags.split(",").map(tag => tag.trim().toLowerCase());
+  // Always filter by status if provided
+  if (status) {
+    filter.status = status;
+  } else if (!tags) {
+    // When no tags are provided, default to published blogs only
+    filter.status = "published";
+  }
 
-  // 1. Find Tag IDs from names
-  const tagDocs = await Tag.find({ name: { $in: tagNames } });
-  const tagIds = tagDocs.map(tag => tag._id);
+  const skip = (parseInt(page) - 1) * parseInt(limit);
 
-  // 2. Use IDs to query blogs
-  const blogs = await Blog.find({ tags: { $in: tagIds } });
+  const blogs = await Blog.find(filter)
+    .skip(skip)
+    .limit(parseInt(limit))
+    .sort({ createdAt: -1 });
+
+  const total = await Blog.countDocuments(filter);
 
   return res.status(200).json(
-    new ApiResponse(200, blogs, "Blogs fetched successfully by tags")
+    new ApiResponse(200, blogs, "Blogs fetched successfully", total)
   );
 });
+
 
 
 export {
@@ -262,6 +325,7 @@ export {
   getBlogBySlug,
   updateBlogDetails,
   updatBlogCoverImage,
+  generateAIDescriptionOnly,
   deleteBlog,
   toggleStatus,
   getBlogsByTags

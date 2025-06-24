@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { BackgroundBeams } from "./ui/background-beams";
 import { HoverBorderGradient } from "./ui/hover-border-gradient";
 import { Button } from "./ui/moving-border";
+import { useAppContext } from '../context/AppContext';
+import { toast } from 'react-toastify';
 
 const Signup = () => {
 
@@ -13,18 +15,61 @@ const Signup = () => {
     confirmPassword: '',
   });
 
+  const { axios, navigate,setUser } = useAppContext();
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Add validation and backend logic
-    if (form.password !== form.confirmPassword) {
-      alert('Passwords do not match');
+
+
+    if (!form.username || !form.email || !form.password || !form.confirmPassword) {
+      toast.error("Please fill in all required fields");
       return;
     }
-    console.log('SignUp Data:', form);
+    if (form.password.length < 6 && form.confirmPassword.length < 6) {
+      toast.error("Password must be at least 6 characters long");
+      return;
+    }
+    if (form.password !== form.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    try {
+      const signRes = await axios.post("/users/signup", form);
+
+      if (signRes.data.success) {
+        toast.success("Signup successful!");
+
+        const logRes = await axios.post("/users/login", {
+          email: form.email,
+          password: form.password,
+        });
+
+
+        if(logRes.data.success){
+          toast.success("Logged in successfully");
+          
+          const token = logRes.data.data.accessToken;
+          const {user} = logRes.data.data
+
+          setUser(user);
+          localStorage.setItem("token",token);
+          localStorage.setItem("user",JSON.stringify(user))
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          navigate("/");
+        }
+
+
+      } else {
+        toast.error(res.data.message || "Signup failed");
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Signup error");
+    }
   };
 
   const handleGoogleSignUp = () => {
@@ -110,7 +155,7 @@ const Signup = () => {
 
 
         <Button
-        containerClassName="w-full hover:bg-zinc-800"
+          containerClassName="w-full hover:bg-zinc-800"
           borderRadius="1.75rem"
           className="bg-white dark:bg-black/90 z-40 cursor-pointer text-black dark:text-white border-neutral-200 dark:border-slate-800 flex gap-3 hover:bg-zinic-900"
         >
@@ -121,9 +166,9 @@ const Signup = () => {
           Already have an account? <a href="#" className="text-[#7fcfec] hover:underline duration-300">Log in</a>
         </p>
       </div>
-<div className="absolute inset-0 -z-10">
-    <BackgroundBeams />
-  </div>
+      <div className="absolute inset-0 -z-10">
+        <BackgroundBeams />
+      </div>
     </div>
 
   )

@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 
 const ReadBlog = () => {
   const { slug } = useParams();
-  const { axios } = useAppContext();
+  const { axios} = useAppContext();
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -17,6 +17,7 @@ const ReadBlog = () => {
   const [comments, setComments] = useState([]);
 
   const token = localStorage.getItem("token");
+  const user = localStorage.getItem("user");
 
   // ✅ Fetch blog data
   const fetchBlogData = async () => {
@@ -113,7 +114,7 @@ const ReadBlog = () => {
         <div className="mt-15">
           <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-neutral-800 dark:text-white">Comments</h2>
 
-          { token ? (<form onSubmit={handleCommentSubmit} className="mb-6">
+          { user ? (<form onSubmit={handleCommentSubmit} className="mb-6">
             <input
               type="text"
               value={name}

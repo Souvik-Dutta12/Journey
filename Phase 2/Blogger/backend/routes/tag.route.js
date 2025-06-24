@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-    createTag,
+
     getAllTags
 } from "../controllers/tag.controller.js"
 
@@ -11,6 +11,6 @@ const router = Router();
 router.route("/").get(getAllTags)
 
 //secured routes
-router.route("/tag/:slug/create").post(verifyJWT,createTag)
+
 
 export default router;

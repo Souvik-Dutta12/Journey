@@ -1,39 +1,44 @@
 import { useContext, useEffect, useState } from "react";
 import { createContext } from "react";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
-import {toast} from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 const AppContext = createContext();
 
-export const AppProvider = ({children})=>{
- 
+export const AppProvider = ({ children }) => {
+
 
     const navigate = useNavigate();
     const [token, setToken] = useState(null);
     const [blogs, setBlogs] = useState([]);
     const [filter, setFilter] = useState("");
+    const [user, setUser] = useState(null)
 
-    const fetchBlogs = async ()=>{
+    const fetchBlogs = async () => {
         try {
-            const {data} = await axios.get("/blogs/blog");
+            const { data } = await axios.get("/blogs/blog");
             data.success ? setBlogs(data.data.blogs) : toast.error(data.data.message);
         } catch (error) {
             toast.error(error.message);
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchBlogs();
         const token = localStorage.getItem("token");
-        if(token){
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+        if (token) {
             setToken(token);
             axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         }
-    },[]);
-    
+    }, []);
+
     const value = {
         axios,
         navigate,
@@ -43,17 +48,19 @@ export const AppProvider = ({children})=>{
         setBlogs,
         filter,
         setFilter,
+        user,
+        setUser
     }
 
-    return(
+    return (
 
-        
+
         <AppContext.Provider value={value}>
             {children}
         </AppContext.Provider>
     )
 }
 
-export const useAppContext = () =>{
+export const useAppContext = () => {
     return useContext(AppContext);
 }
