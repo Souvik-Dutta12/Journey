@@ -15,7 +15,8 @@ const CollectionHero = () => {
   const [tags, setTags] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [anotherBlog, setAnotherBlog] = useState([]);
 
   const postsPerPage = 12;
 
@@ -26,8 +27,18 @@ const CollectionHero = () => {
 
   const token = localStorage.getItem("token");
   const user = localStorage.getItem("user");
-  const { axios, navigate } = useAppContext();
+  const { axios, navigate, blogs } = useAppContext();
 
+
+  const publishedBlogs = blogs.filter(blog => blog.status === "published");
+  const draftBlogs = blogs.filter(blog => blog.status === "draft");
+  const filteredBlogs = selectedTags.length > 0
+    ? publishedBlogs.filter(blog =>
+      selectedTags.every(selected =>
+        blog.tags.some(tag => tag.name === selected)
+      )
+    )
+    : publishedBlogs;
   const fetchTags = async () => {
     try {
       const res = await axios.get("/tags/");
@@ -45,6 +56,49 @@ const CollectionHero = () => {
     }
     fetchTags();
   }, []);
+
+  const totalBlog = () => {
+    return publishedBlogs.length;
+  };
+  const draftBlog = () => {
+    return draftBlogs.length;
+  }
+  const handleTagClick = (tagName) => {
+    setSelectedTags(prev => {
+      const alreadySelected = prev.includes(tagName);
+
+      if (alreadySelected) {
+        // Remove tag
+        return prev.filter(tag => tag !== tagName);
+      } else {
+        // Add tag (only if less than 3)
+        if (prev.length < 3) {
+          return [...prev, tagName];
+        } else {
+          toast.error("You can select up to 3 tags only");
+          return prev;
+        }
+      }
+    });
+  };
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const params = {
+          status: "published",
+          tags: selectedTags.join(","), // Send as comma-separated
+        };
+
+        const res = await axios.get("/blogs/tags", { params });
+        setAnotherBlog(res.data.data);
+      } catch (err) {
+
+      }
+    };
+
+    fetchBlogs();
+  }, [selectedTags]);
 
 
   return (
@@ -68,7 +122,7 @@ const CollectionHero = () => {
             <GlareCard className="flex flex-col items-center justify-center">
 
               <h1 className='flex items-center md:gap-2 sm:gap-1 md:text-4xl sm:text-lg justify-center font-bold'>Total blog <i className="ri-news-line"></i></h1>
-              <span className='font-bold md:text-4xl sm:text-lg'>0</span>
+              <span className='font-bold md:text-4xl sm:text-lg'>{totalBlog()}</span>
 
             </GlareCard>
           </Link>
@@ -77,7 +131,7 @@ const CollectionHero = () => {
           <Link to={'/draft'}>
             <GlareCard className="flex flex-col items-center justify-center">
               <h1 className='flex items-center md:gap-2 sm:gap-1 md:text-4xl sm:text-lg justify-center font-bold'>Draft<i className="ri-draft-line"></i></h1>
-              <span className='font-bold md:text-4xl sm:text-lg'>0</span>
+              <span className='font-bold md:text-4xl sm:text-lg'>{draftBlog()}</span>
             </GlareCard>
           </Link>
         </button>
@@ -87,60 +141,63 @@ const CollectionHero = () => {
       <div className="w-full md:w-full sm:w-[90vw] min-h-screen p-6 ">
         <h1 className=" text-5xl sm:text-5xl md:text-7xl  bg-clip-text h-30 text-transparent bg-gradient-to-b from-white to-neutral-700  text-center font-sans font-bold  md:mt-10 sm:-mt-20">Our Collections</h1>
         <div className="w-full md:w-full sm:w-[90vw] flex flex-wrap gap-2 p-5">
-          {
-            tags.map((tag, index) => (
-              <span
-                key={tag._id}
-                onClick={() => {
-                  setSelectedTag(tag.name);
-                  setCurrentPage(1);
-                }}
-                className={`cursor-pointer transition-all hover:bg-${tag.color}-300 hover:border-${tag.color}-500 duration-300 hover:text-black rounded-md border border-${tag.color}-400 bg-${tag.color}-200 px-1.5 py-0.5 text-sm leading-none text-${tag.color}-700 no-underline group-hover:no-underline dark:bg-${tag.color}-300/10 dark:text-${tag.color}-500`}
-              >
-                {tag.name}
-              </span>
-            ))
-          }
+          {tags.map((tag) => (
+            <span
+              key={tag._id}
+              onClick={() => handleTagClick(tag.name)}
+              className={`cursor-pointer transition-all duration-300 rounded-md border px-1.5 py-0.5 text-sm leading-none
+      ${selectedTags.includes(tag.name)
+                  ? "bg-cyan-800 text-cyan-200  border-cyan-600"
+                  : "bg-cyan-300/10 text-cyan-500 border-cyan-400"
+                }
+      
+      hover:bg-cyan-300 hover:border-cyan-500 hover:text-black
+
+    `}
+            >
+              {tag.name}
+            </span>
+          ))}
+
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 justify-items-center">
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((item, index) => (
-            <CardContainer key={index} className="inter-var">
-              <CardBody className="bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full sm:w-[22rem] h-auto rounded-xl p-6 border">
-                <CardItem
+          {anotherBlog.map((blog, index) => (
+            <CardContainer key={blog._id} className="inter-var">
+              <CardBody className="bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full sm:w-[22rem] h-[500px] flex flex-col rounded-xl p-6 border">
 
-                  className="text-xl font-bold text-neutral-600 dark:text-white"
-                >
-                  Make things float in air {item}
-                </CardItem>
-                <CardItem
-                  as="p"
+                <div className='flex flex-col justify-evenly h-full'>
+                  <CardItem className="text-xl font-bold text-neutral-600 dark:text-white">
+                    {blog.title}
+                  </CardItem>
 
-                  className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
-                >
-                  Hover over this card to unleash the power of CSS perspective.
-                </CardItem>
-                <CardItem translateZ="20" className="w-full mt-4">
+                  <CardItem as="p" className="text-neutral-500 text-sm max-w-sm dark:text-neutral-300 mt-2">
+                    {blog.shortDescription || "No description provided."}
+                  </CardItem>
+                </div>
+
+                <CardItem translateZ="20" className="w-full mt-4 flex-grow">
                   <img
-                    src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    src={blog.coverImage || "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop"}
                     height="1000"
                     width="1000"
                     className="h-60 w-full object-cover rounded-xl group-hover/card:shadow-xl"
-                    alt="thumbnail"
+                    alt="blog thumbnail"
                   />
                 </CardItem>
+
                 <div className="flex justify-between items-center mt-6">
                   <CardItem
                     translateZ={20}
-                    as="a"
-                    href="#"
-                    target="__blank"
+
                     className="px-4 py-2 rounded-xl text-md font-normal dark:text-white"
                   >
-                    Read more →
+                    <Link to={`/blogs/blog/${encodeURIComponent(blog.slug)}`}>
+                      Read more →
+                    </Link>
                   </CardItem>
-
                 </div>
+
               </CardBody>
             </CardContainer>
           ))}

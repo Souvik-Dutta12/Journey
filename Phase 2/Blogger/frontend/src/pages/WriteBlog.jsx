@@ -26,16 +26,13 @@ const WriteBlog = () => {
   const [isGenerating, setIsGenerating] = useState(false);
 const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { navigate, axios } = useAppContext();
+  const { navigate, axios,setBlogs } = useAppContext();
   const modules = {
     toolbar: [
       [{ header: [1, 2, 3, false] }],
       ["bold", "italic", "underline"],
-      ["code-block"],
-      ["image", "link"],
+      [ "link"],
       [{ list: "ordered" }, { list: "bullet" }],
-      [{ align: [] }],
-      ["clean"] // remove formatting button
     ],
   };
 
@@ -44,12 +41,9 @@ const [isSubmitting, setIsSubmitting] = useState(false);
     "bold",
     "italic",
     "underline",
-    "code-block",
-    "image",
     "link",
     "list",
     "bullet",
-    "align",
   ];
 
 
@@ -114,8 +108,10 @@ const handleSubmit = async (e) => {
   finalTags.forEach(tag => formData.append("tags", tag));
 
   try {
-    await axios.post("/blogs/blog/create", formData);
-    toast.success("Blog submitted successfully!");
+    const res = await axios.post("/blogs/blog/create", formData);
+    toast.success("Blog created successfully!");
+
+    setBlogs((prev)=>[res.data.data, ...prev])
     navigate("/collection");
   } catch (error) {
     toast.error("Blog submission failed.");

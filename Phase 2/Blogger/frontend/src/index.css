@@ -91,3 +91,38 @@
   content: attr(data-placeholder); /* uses the placeholder prop */
 }
 
+
+@layer components {
+  .custom-prose .ql-align-center {
+    @apply text-center;
+  }
+  .custom-prose .ql-align-right {
+    @apply text-right;
+  }
+  .custom-prose .ql-align-left {
+    @apply text-left;
+  }
+  .custom-prose .ql-align-justify {
+    @apply text-justify;
+  }
+
+  /* Optional: Ensure headers inside prose have correct font sizes */
+  .custom-prose h1 {
+    @apply text-4xl font-bold;
+  }
+  .custom-prose h2 {
+    @apply text-3xl font-semibold;
+  }
+  .custom-prose h3 {
+    @apply text-2xl font-medium;
+  }
+}
+
+.custom-prose ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+.custom-prose ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+}

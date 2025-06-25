@@ -4,6 +4,7 @@ import { HoverBorderGradient } from "../components/ui/hover-border-gradient";
 import Footer from '../components/Footer';
 import { useAppContext } from '../context/AppContext';
 import { toast } from 'react-toastify';
+import DOMPurify from 'dompurify';
 
 const ReadBlog = () => {
   const { slug } = useParams();
@@ -19,11 +20,19 @@ const ReadBlog = () => {
   const token = localStorage.getItem("token");
   const user = localStorage.getItem("user");
 
+
+      useEffect(() => {
+    fetchBlogData();
+    fetchBlogComments(); // ✅ both triggered on mount/slug change
+
+  }, [slug]);
+
   // ✅ Fetch blog data
   const fetchBlogData = async () => {
     setLoading(true);
     try {
       const res = await axios.get(`/blogs/blog/${slug}`);
+
       if (res.data.success) {
         setData(res.data.data);
       } else {
@@ -38,22 +47,23 @@ const ReadBlog = () => {
 
   // ✅ Fetch comments
   const fetchBlogComments = async () => {
-    try {
-      const res = await axios.get(`/comments/comment/${slug}`);
-      if (res.data.success) {
-        setComments(res.data.data);
-      } else {
-        toast.error(res.data.message || "Failed to load comments");
-      }
-    } catch (error) {
-      toast.error(error.message || "Error fetching comments");
-    }
-  };
 
-  useEffect(() => {
-    fetchBlogData();
-    fetchBlogComments(); // ✅ both triggered on mount/slug change
-  }, [slug]);
+     try {
+       const res = await axios.get(`/comments/comment/${slug}`);
+ 
+     // If successful, even if there are no comments, set empty array
+     if (res.data.success) {
+       const commentData = res.data.data;
+       setComments(commentData || []);
+     }
+     } catch (error) {
+
+     }
+
+   
+};
+
+
 
   // ✅ Handle comment submission
   const handleCommentSubmit = async (e) => {
@@ -85,6 +95,28 @@ const ReadBlog = () => {
 
   const { coverImage, title, shortDescription, authorName, createdAt, tags, description } = data;
 
+DOMPurify.addHook("uponSanitizeAttribute", function (node, data) {
+  if (data.attrName === "style") {
+    const allowedStyles = ["text-align"];
+    const styles = data.attrValue.split(";").map((s) => s.trim());
+
+    const filtered = styles.filter((style) => {
+      const [property] = style.split(":").map((part) => part.trim());
+      return allowedStyles.includes(property);
+    });
+
+    data.attrValue = filtered.join("; ");
+  }
+});
+
+const cleanedDescription = DOMPurify.sanitize(
+  description.replace(/<p>(\s|&nbsp;|<br>)*<\/p>/g, ""), // clean empty p
+  {
+    ALLOWED_ATTR: ["style", "href", "target"],
+    FORBID_TAGS: ["style"],
+  }
+).replace(/<a /g, '<a target="_blank" rel="noopener noreferrer" ');
+  
   return (
     <>
       <div className="max-w-4xl mx-auto px-4 lg:pt-40 py-10 bg-white dark:bg-neutral-950 rounded-xl shadow-md">
@@ -101,14 +133,15 @@ const ReadBlog = () => {
         </div>
         <div className="flex flex-wrap gap-2 mb-6">
           {tags.map((tag, i) => (
-            <span key={i} className="rounded-md border border-green-400 bg-green-200 px-1.5 py-0.5 text-sm text-green-700 dark:bg-green-300/10 dark:text-green-500">
-              #{tag}
+            <span key={i} className="rounded-md border border-cyan-400 bg-cyan-200 px-1.5 py-0.5 text-sm text-cyan-700 dark:bg-cyan-300/10 dark:text-cyan-500">
+              #{tag.name}
             </span>
           ))}
         </div>
-        <div className="text-md leading-7 text-neutral-700 dark:text-neutral-200 mb-10 whitespace-pre-line">
-          {description}
-        </div>
+        <div
+  className="prose prose-zinc dark:prose-invert max-w-none custom-prose"
+  dangerouslySetInnerHTML={{ __html: cleanedDescription }}
+></div>
 
         {/* Comment Section */}
         <div className="mt-15">

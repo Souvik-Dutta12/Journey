@@ -28,6 +28,10 @@ export const AppProvider = ({ children }) => {
 
     useEffect(() => {
         fetchBlogs();
+        
+    }, [blogs]);
+
+    useEffect(()=>{
         const token = localStorage.getItem("token");
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
@@ -37,8 +41,7 @@ export const AppProvider = ({ children }) => {
             setToken(token);
             axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         }
-    }, []);
-
+    },[])
     const value = {
         axios,
         navigate,
