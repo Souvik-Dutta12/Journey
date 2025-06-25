@@ -116,40 +116,20 @@ const generateAIDescriptionOnly = asyncHandler(async (req, res) => {
 
 const getAllBlog = asyncHandler(async (req, res) => {
   const {
-    page = 1,
-    limit = 12,
-    tag,
     sortBy = "createdAt",
     sortType = "desc"
   } = req.query;
 
-  const filters = {};
-
-  if (tag) {
-    filters.tags = tag; // assuming `tags` is an array of strings
-  }
-
   const sortOptions = {};
   sortOptions[sortBy] = sortType === "asc" ? 1 : -1;
 
-  const skip = (parseInt(page) - 1) * parseInt(limit);
-
-  const blogs = await Blog.find(filters)
-    .sort(sortOptions)
-    .skip(skip)
-    .limit(parseInt(limit));
-
-  const totalBlogs = await Blog.countDocuments(filters);
+  const blogs = await Blog.find().sort(sortOptions);
+  const totalBlogs = blogs.length;
 
   res.status(200).json(
     new ApiResponse(200, {
       blogs,
-      pagination: {
-        total: totalBlogs,
-        page: parseInt(page),
-        limit: parseInt(limit),
-        totalPages: Math.ceil(totalBlogs / parseInt(limit)),
-      },
+      total: totalBlogs
     }, "Successfully fetched all blogs")
   );
 });
@@ -286,8 +266,19 @@ const getBlogsByTags = asyncHandler(async (req, res) => {
 
   const filter = {};
 
+  // Add status if provided, or default to "published"
+  if (status) {
+    filter.status = status;
+  } else {
+    filter.status = "published";
+  }
+
+  const parsedPage = parseInt(page);
+  const parsedLimit = parseInt(limit);
+  const skip = (parsedPage - 1) * parsedLimit;
+
   // If tags are provided and valid
-  if (tags && typeof tags === "string") {
+  if (tags && typeof tags === "string" && tags.trim() !== "") {
     const tagNames = tags.split(",").map(tag => tag.trim().toLowerCase());
     const tagDocs = await Tag.find({ name: { $in: tagNames } });
     const tagIds = tagDocs.map(tag => tag._id);
@@ -295,27 +286,27 @@ const getBlogsByTags = asyncHandler(async (req, res) => {
     filter.tags = { $in: tagIds };
   }
 
-  // Always filter by status if provided
-  if (status) {
-    filter.status = status;
-  } else if (!tags) {
-    // When no tags are provided, default to published blogs only
-    filter.status = "published";
-  }
-
-  const skip = (parseInt(page) - 1) * parseInt(limit);
-
   const blogs = await Blog.find(filter)
     .skip(skip)
-    .limit(parseInt(limit))
+    .limit(parsedLimit)
     .sort({ createdAt: -1 });
 
   const total = await Blog.countDocuments(filter);
+  const totalPages = Math.ceil(total / parsedLimit);
 
   return res.status(200).json(
-    new ApiResponse(200, blogs, "Blogs fetched successfully", total)
+    new ApiResponse(200, {
+      blogs,
+      pagination: {
+        total,
+        page: parsedPage,
+        limit: parsedLimit,
+        totalPages
+      }
+    }, "Blogs fetched successfully")
   );
 });
+
 
 
 

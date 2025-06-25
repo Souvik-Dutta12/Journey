@@ -16,29 +16,25 @@ const CollectionHero = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedTags, setSelectedTags] = useState([]);
-  const [anotherBlog, setAnotherBlog] = useState([]);
 
-  const postsPerPage = 12;
 
-  const indexOfLast = currentPage * postsPerPage;
-  const indexOfFirst = indexOfLast - postsPerPage;
-  //   const currentPosts = blogs.slice(indexOfFirst, indexOfLast);
+  const [publishedBlogs, setPublishedBlogs] = useState([]);
+  const [draftBlogs, setDraftBlogs] = useState([]);
 
+  const [filteredBlogs, setFilteredBlogs] = useState([]);
+  const [totalFilteredCount, setTotalFilteredCount] = useState(0);
 
   const token = localStorage.getItem("token");
   const user = localStorage.getItem("user");
   const { axios, navigate, blogs } = useAppContext();
 
+  const postsPerPage = 12;
 
-  const publishedBlogs = blogs.filter(blog => blog.status === "published");
-  const draftBlogs = blogs.filter(blog => blog.status === "draft");
-  const filteredBlogs = selectedTags.length > 0
-    ? publishedBlogs.filter(blog =>
-      selectedTags.every(selected =>
-        blog.tags.some(tag => tag.name === selected)
-      )
-    )
-    : publishedBlogs;
+  const currentBlogs = filteredBlogs;
+
+  const startIndex = (currentPage - 1) * postsPerPage;
+
+
   const fetchTags = async () => {
     try {
       const res = await axios.get("/tags/");
@@ -49,6 +45,7 @@ const CollectionHero = () => {
   };
 
   useEffect(() => {
+
     if (!token || !user) {
       toast.error("Please login to access our collection");
       setTimeout(() => navigate("/login"), 1000);
@@ -57,12 +54,6 @@ const CollectionHero = () => {
     fetchTags();
   }, []);
 
-  const totalBlog = () => {
-    return publishedBlogs.length;
-  };
-  const draftBlog = () => {
-    return draftBlogs.length;
-  }
   const handleTagClick = (tagName) => {
     setSelectedTags(prev => {
       const alreadySelected = prev.includes(tagName);
@@ -82,23 +73,57 @@ const CollectionHero = () => {
     });
   };
 
+  const fetchPublishedBlogs = async () => {
+    try {
+      const res = await axios.get("/blogs/blog");
+      const blogs = res.data.data.blogs;
+      const temp = blogs.filter(blog => blog.status === "published");
+      setPublishedBlogs(temp);
+    } catch (err) {
+
+    }
+  }
+  const fetchDraftBlogs = async () => {
+    try {
+      const res = await axios.get("/blogs/blog");
+      const blogs = res.data.data.blogs;
+      const temp = blogs.filter(blog => blog.status === "draft");
+      setDraftBlogs(temp);
+    } catch (err) {
+
+    }
+  }
   useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const params = {
-          status: "published",
-          tags: selectedTags.join(","), // Send as comma-separated
-        };
 
-        const res = await axios.get("/blogs/tags", { params });
-        setAnotherBlog(res.data.data);
-      } catch (err) {
+    fetchPublishedBlogs();
+    fetchDraftBlogs();
+  }, [blogs]);
 
+  const fetchFilteredBlogs = async () => {
+    try {
+      const query = {
+        page: currentPage,
+        limit: postsPerPage,
+        status: "published"
+      };
+
+      if (selectedTags.length > 0) {
+        query.tags = selectedTags.join(",");
       }
-    };
 
-    fetchBlogs();
-  }, [selectedTags]);
+      const res = await axios.get("/blogs/tags", { params: query });
+
+      const { blogs, pagination } = res.data.data;
+      setFilteredBlogs(blogs);
+      setTotalFilteredCount(pagination.total); // Optional: for Pagination
+    } catch (err) {
+      toast.error("Failed to fetch blogs");
+    }
+  };
+
+  useEffect(() => {
+    fetchFilteredBlogs();
+  }, [selectedTags, currentPage]);
 
 
   return (
@@ -122,7 +147,7 @@ const CollectionHero = () => {
             <GlareCard className="flex flex-col items-center justify-center">
 
               <h1 className='flex items-center md:gap-2 sm:gap-1 md:text-4xl sm:text-lg justify-center font-bold'>Total blog <i className="ri-news-line"></i></h1>
-              <span className='font-bold md:text-4xl sm:text-lg'>{totalBlog()}</span>
+              <span className='font-bold md:text-4xl sm:text-lg'>{publishedBlogs.length}</span>
 
             </GlareCard>
           </Link>
@@ -131,7 +156,7 @@ const CollectionHero = () => {
           <Link to={'/draft'}>
             <GlareCard className="flex flex-col items-center justify-center">
               <h1 className='flex items-center md:gap-2 sm:gap-1 md:text-4xl sm:text-lg justify-center font-bold'>Draft<i className="ri-draft-line"></i></h1>
-              <span className='font-bold md:text-4xl sm:text-lg'>{draftBlog()}</span>
+              <span className='font-bold md:text-4xl sm:text-lg'>{draftBlogs.length}</span>
             </GlareCard>
           </Link>
         </button>
@@ -162,7 +187,7 @@ const CollectionHero = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 justify-items-center">
-          {anotherBlog.map((blog, index) => (
+          {currentBlogs.map((blog, index) => (
             <CardContainer key={blog._id} className="inter-var">
               <CardBody className="bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full sm:w-[22rem] h-[500px] flex flex-col rounded-xl p-6 border">
 
@@ -205,8 +230,8 @@ const CollectionHero = () => {
         </div>
 
         <Pagination
-          totalPosts={30}
-          postsPerPage={3}
+          totalPosts={totalFilteredCount}
+          postsPerPage={postsPerPage}
           onPageChange={(page) => setCurrentPage(page)}
         />
 
