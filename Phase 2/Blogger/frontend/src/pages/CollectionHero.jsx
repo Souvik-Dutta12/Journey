@@ -115,7 +115,7 @@ const CollectionHero = () => {
 
       const { blogs, pagination } = res.data.data;
       setFilteredBlogs(blogs);
-      setTotalFilteredCount(pagination.total); // Optional: for Pagination
+      setTotalFilteredCount(pagination.total);
     } catch (err) {
       toast.error("Failed to fetch blogs");
     }

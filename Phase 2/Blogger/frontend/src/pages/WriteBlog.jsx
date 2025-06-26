@@ -136,7 +136,7 @@ const handleSubmit = async (e) => {
 
       if (aiDescription) {
         setUseAIDescripton(true);            // track that AI was used
-        setDescription(aiDescription);       // ✅ show in ReactQuill editor
+        setDescription(aiDescription);       //  show in ReactQuill editor
         toast.success("AI description generated!");
       } else {
         toast.error("AI did not return any description.");

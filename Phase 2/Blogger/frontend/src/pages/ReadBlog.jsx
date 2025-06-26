@@ -27,7 +27,7 @@ const ReadBlog = () => {
 
   }, [slug]);
 
-  // ✅ Fetch blog data
+  //  Fetch blog data
   const fetchBlogData = async () => {
     setLoading(true);
     try {
@@ -45,7 +45,7 @@ const ReadBlog = () => {
     }
   };
 
-  // ✅ Fetch comments
+  // Fetch comments
   const fetchBlogComments = async () => {
 
      try {
@@ -65,7 +65,7 @@ const ReadBlog = () => {
 
 
 
-  // ✅ Handle comment submission
+  // Handle comment submission
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!name || !content) return toast.error("Please fill in all fields");
@@ -78,7 +78,7 @@ const ReadBlog = () => {
         toast.success("Comment posted!");
         setName('');
         setContent('');
-        fetchBlogComments(); // ✅ refresh comment list
+        fetchBlogComments(); //  refresh comment list
       } else {
         toast.error(res.data.message);
       }
@@ -89,7 +89,7 @@ const ReadBlog = () => {
     }
   };
 
-  // ✅ Handle loading & empty
+  //  Handle loading & empty
   if (loading) return <div className="text-center py-10 text-neutral-500">Loading blog...</div>;
   if (!data) return <div className="text-center py-10 text-red-500">Blog not found.</div>;
 
