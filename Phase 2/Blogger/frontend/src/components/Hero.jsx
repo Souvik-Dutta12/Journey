@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 
 const Hero = () => {
     const token = localStorage.getItem("token");
-    const user = localStorage.getItem("user");
+    const user = JSON.parse(localStorage.getItem("user"));
     const {navigate} = useAppContext();
     const handleGetStarted = () => {
         if(token && user){

@@ -25,7 +25,7 @@ const CollectionHero = () => {
   const [totalFilteredCount, setTotalFilteredCount] = useState(0);
 
   const token = localStorage.getItem("token");
-  const user = localStorage.getItem("user");
+  const user = JSON.parse(localStorage.getItem("user"));
   const { axios, navigate, blogs } = useAppContext();
 
   const postsPerPage = 12;

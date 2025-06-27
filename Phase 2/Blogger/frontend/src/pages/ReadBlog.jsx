@@ -8,7 +8,7 @@ import DOMPurify from 'dompurify';
 
 const ReadBlog = () => {
   const { slug } = useParams();
-  const { axios} = useAppContext();
+  const { axios } = useAppContext();
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -17,11 +17,28 @@ const ReadBlog = () => {
   const [submitting, setSubmitting] = useState(false);
   const [comments, setComments] = useState([]);
 
+  const [lovedComments, setLovedComments] = useState({});
+  const [loveCounts, setLoveCounts] = useState({});
+
   const token = localStorage.getItem("token");
-  const user = localStorage.getItem("user");
+  const user = JSON.parse(localStorage.getItem("user"));
 
 
-      useEffect(() => {
+  useEffect(() => {
+    if(!comments || !user?._id) return;
+    const initialLoved = {};
+    const initialCounts = {};
+
+    comments.forEach(comment => {
+      initialLoved[comment._id] = comment.loves.includes(user._id);
+      initialCounts[comment._id] = comment.loves.length;
+    });
+
+    setLovedComments(initialLoved);
+    setLoveCounts(initialCounts);
+  }, [comments, user?._id]);
+
+  useEffect(() => {
     fetchBlogData();
     fetchBlogComments(); // ✅ both triggered on mount/slug change
 
@@ -48,22 +65,34 @@ const ReadBlog = () => {
   // Fetch comments
   const fetchBlogComments = async () => {
 
-     try {
-       const res = await axios.get(`/comments/comment/${slug}`);
- 
-     // If successful, even if there are no comments, set empty array
-     if (res.data.success) {
-       const commentData = res.data.data;
-       setComments(commentData || []);
-     }
-     } catch (error) {
+    try {
+      const res = await axios.get(`/comments/comment/${slug}`);
 
-     }
+      // If successful, even if there are no comments, set empty array
+      if (res.data.success) {
+        const commentData = res.data.data;
+        setComments(commentData || []);
+      }
+    } catch (error) {
 
-   
+    }
+
+
+  };
+
+const handleToggleLove = async (commentId) => {
+  try {
+    const res = await axios.patch(`/comments/comment/${commentId}/toggle`);
+
+    const { loved, loveCount } = res.data.data;
+
+    setLovedComments(prev => ({ ...prev, [commentId]: loved }));
+    setLoveCounts(prev => ({ ...prev, [commentId]: loveCount }));
+  } catch (err) {
+
+    toast.error("Failed to toggle love");
+  }
 };
-
-
 
   // Handle comment submission
   const handleCommentSubmit = async (e) => {
@@ -95,28 +124,36 @@ const ReadBlog = () => {
 
   const { coverImage, title, shortDescription, authorName, createdAt, tags, description } = data;
 
-DOMPurify.addHook("uponSanitizeAttribute", function (node, data) {
-  if (data.attrName === "style") {
-    const allowedStyles = ["text-align"];
-    const styles = data.attrValue.split(";").map((s) => s.trim());
+  DOMPurify.addHook("uponSanitizeAttribute", function (node, data) {
+    if (data.attrName === "style") {
+      const allowedStyles = ["text-align"];
+      const styles = data.attrValue.split(";").map((s) => s.trim());
 
-    const filtered = styles.filter((style) => {
-      const [property] = style.split(":").map((part) => part.trim());
-      return allowedStyles.includes(property);
-    });
+      const filtered = styles.filter((style) => {
+        const [property] = style.split(":").map((part) => part.trim());
+        return allowedStyles.includes(property);
+      });
 
-    data.attrValue = filtered.join("; ");
+      data.attrValue = filtered.join("; ");
+    }
+  });
+
+  const cleanedDescription = DOMPurify.sanitize(
+    description.replace(/<p>(\s|&nbsp;|<br>)*<\/p>/g, ""), // clean empty p
+    {
+      ALLOWED_ATTR: ["style", "href", "target"],
+      FORBID_TAGS: ["style"],
+    }
+  ).replace(/<a /g, '<a target="_blank" rel="noopener noreferrer" ');
+
+
+  const handleDelete = async ()=>{
+    try{
+      
+    }catch(error){
+
+    }
   }
-});
-
-const cleanedDescription = DOMPurify.sanitize(
-  description.replace(/<p>(\s|&nbsp;|<br>)*<\/p>/g, ""), // clean empty p
-  {
-    ALLOWED_ATTR: ["style", "href", "target"],
-    FORBID_TAGS: ["style"],
-  }
-).replace(/<a /g, '<a target="_blank" rel="noopener noreferrer" ');
-  
   return (
     <>
       <div className="max-w-4xl mx-auto px-4 lg:pt-40 py-10 bg-white dark:bg-neutral-950 rounded-xl shadow-md">
@@ -139,15 +176,15 @@ const cleanedDescription = DOMPurify.sanitize(
           ))}
         </div>
         <div
-  className="prose prose-zinc dark:prose-invert max-w-none custom-prose"
-  dangerouslySetInnerHTML={{ __html: cleanedDescription }}
-></div>
+          className="prose prose-zinc dark:prose-invert max-w-none custom-prose"
+          dangerouslySetInnerHTML={{ __html: cleanedDescription }}
+        ></div>
 
         {/* Comment Section */}
         <div className="mt-15">
           <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-neutral-800 dark:text-white">Comments</h2>
 
-          { user ? (<form onSubmit={handleCommentSubmit} className="mb-6">
+          {user ? (<form onSubmit={handleCommentSubmit} className="mb-6">
             <input
               type="text"
               value={name}
@@ -175,22 +212,44 @@ const cleanedDescription = DOMPurify.sanitize(
 
           {/* Comments */}
           <div className="space-y-4">
-            {comments.length === 0 ? (
-              <p className="text-neutral-400">No comments yet.</p>
-            ) : (
-              comments.map((comment, i) => (
-                <div key={i} className="border-t pt-4 dark:border-gray-700 flex justify-between">
-                  <div>
-                    <p className="text-sm text-neutral-600 dark:text-neutral-300">
-                      <strong>{comment.user.username}</strong> — {new Date(comment.createdAt).toLocaleDateString()}
-                    </p>
-                    <p className="text-neutral-800 dark:text-neutral-200">{comment.content}</p>
-                  </div>
-                  <i className="ri-heart-fill text-xl mr-5 cursor-pointer text-zinc-500 hover:text-pink-600 transition-colors"></i>
-                </div>
-              ))
-            )}
-          </div>
+  {comments.length === 0 ? (
+    <p className="text-neutral-400">No comments yet.</p>
+  ) : (
+    comments.map((comment) => (
+      <div key={comment._id} className="border-t pt-4 dark:border-gray-700 flex justify-between">
+        <div>
+          <p className="text-sm text-neutral-600 dark:text-neutral-300">
+            <strong>{comment.user.username}</strong> — {new Date(comment.createdAt).toLocaleDateString()}
+          </p>
+          <p className="text-neutral-800 dark:text-neutral-200">{comment.content}</p>
+        </div>
+        <div className="flex items-center">
+          {user ? (
+            <div className='flex items-center justify-center gap-7'>
+              <div className='flex items-center justify-center'>
+                <i
+            className={`ri-heart-fill text-xl mr-2 cursor-pointer transition-colors ${
+              lovedComments[comment._id] ? "text-pink-600" : "text-zinc-500 hover:text-pink-600"
+            }`}
+            onClick={() => handleToggleLove(comment._id)}
+          ></i>
+
+          <span className="text-sm text-zinc-500">{loveCounts[comment._id]}</span>
+              </div>
+          <button className='text-red-500 text-lg cursor-pointer '
+            onClick={handleDelete}
+          >
+            <i className="ri-delete-bin-line "></i>
+          </button>
+            </div>
+          ) : null}
+          
+        </div>
+      </div>
+    ))
+  )}
+</div>
+
         </div>
       </div>
       <Footer />

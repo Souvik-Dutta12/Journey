@@ -53,8 +53,8 @@ const About = () => {
     <div className='w-screen md:w-screen sm:w-[85vw] min-h-screen md:min-h-screen sm:min-h-10 mt-90 md:mt-90 sm:mt-0' >
         <DraggableCardContainer className="relative flex md:flex sm:hidden md:min-h-screen   w-full items-center justify-center overflow-clip">
       
-      {items.map((item) => (
-        <DraggableCardBody className={item.className}>
+      {items.map((item,index) => (
+        <DraggableCardBody key={index} className={item.className}>
           <img
             src={item.image}
             alt={item.title}

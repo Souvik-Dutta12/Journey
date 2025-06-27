@@ -5,7 +5,7 @@ import { useAppContext } from '../context/AppContext';
 import { Link } from 'react-router';
 const Draft = () => {
 
-  const localuser = localStorage.getItem("user");
+  const localuser = JSON.parse(localStorage.getItem("user"));
   const { user, axios } = useAppContext();
   const [userBlogs, setUserBlogs] = useState([]);
 

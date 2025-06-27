@@ -8,7 +8,7 @@ import { Link } from 'react-router';
 const Total = () => {
 
 
-  const localuser = localStorage.getItem("user");
+  const localuser = JSON.parse(localStorage.getItem("user"));
 
   const { user,setBlogs,blogs, axios } = useAppContext();
 

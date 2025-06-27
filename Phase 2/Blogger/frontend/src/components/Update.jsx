@@ -183,7 +183,7 @@ const Update = () => {
 
 
   const token = localStorage.getItem("token");
-  const user = localStorage.getItem("user")
+  const user = JSON.parse(localStorage.getItem("user"))
   const handleChange = (value) => {
     setDescription(value);
   }
