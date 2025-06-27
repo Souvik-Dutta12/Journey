@@ -106,25 +106,36 @@ const toggleLove = asyncHandler(async (req, res) => {
   );
 });
 
-const deleteComment = asyncHandler(async (req,res)=>{
+const deleteComment = asyncHandler(async (req, res) => {
   const userId = req.user?._id;
-  if(!userId){
-    throw new ApiError(401,"Unauthorised User")
-  }
-  const {commentId} = req.params;
-  if(!commentId){
-    throw new ApiError(404,"Comment not found")
+  if (!userId) {
+    throw new ApiError(401, "Unauthorized user");
   }
 
-  const comment = await Comment.findByIdAndDelete(commentId);
-
-  if(!comment){
-    throw new ApiError(400,"Error while deleting the comment")
+  const { commentId } = req.params;
+  if (!commentId) {
+    throw new ApiError(404, "Comment ID not provided");
   }
 
-  return res.status(200)
-  .json(new ApiResponse(200,comment,"Comment delete successfully"))
-})
+  const comment = await Comment.findById(commentId).populate("blog");
+  if (!comment) {
+    throw new ApiError(404, "Comment not found");
+  }
+
+  // Check if the user owns the blog
+  const blogOwnerId = comment.blog?.user?.toString(); // assuming blog.user stores blog creator's ID
+
+  if (blogOwnerId !== userId.toString()) {
+    throw new ApiError(403, "Only the blog owner can delete comments");
+  }
+
+  await Comment.findByIdAndDelete(commentId);
+
+  return res.status(200).json(
+    new ApiResponse(200, null, "Comment deleted successfully")
+  );
+});
+
 export{
   createComment,
   getCommentsByBlog,

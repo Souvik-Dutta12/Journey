@@ -14,6 +14,7 @@ import { ToastContainer } from 'react-toastify';
 import { useAppContext } from './context/AppContext'
 import Update from './components/Update'
 import Continue from './components/Continue'
+import Profile from './pages/Profile'
 
 const App = () => {
 
@@ -44,6 +45,7 @@ const App = () => {
         <Route path='/draft' element={<Draft />} />
         <Route path='/blogs/:slug' element={<Update />} />
         <Route path='/blogs/continue/:slug' element={<Continue />} />
+        <Route path='/users/user/:userId' element={<Profile />}/>
         <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Routes>
 
