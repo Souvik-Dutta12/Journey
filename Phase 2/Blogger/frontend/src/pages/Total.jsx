@@ -10,7 +10,7 @@ const Total = () => {
 
   const localuser = localStorage.getItem("user");
 
-  const { user, axios } = useAppContext();
+  const { user,setBlogs,blogs, axios } = useAppContext();
 
   const [userBlogs, setUserBlogs] = useState([]);
 
@@ -35,25 +35,37 @@ const Total = () => {
     if (user && user._id) {
       fetchUserBlogs()
     }
-  }, [user])
+  }, [user,blogs])
 
-  const handleDeleteBlog = async () => {
-    try {
-      await axios.delete(`/blogs/blog/${blogToDelete.slug}`);
+const handleDeleteBlog = async () => {
+  if (!blogToDelete || !blogToDelete.slug) {
+    return toast.error("Invalid blog selected for deletion");
+  }
+
+  try {
+
+    const response = await axios.delete(`/blogs/blog/${blogToDelete.slug}`);
+
+    if (response.status === 200) {
       toast.success("Blog deleted successfully");
 
-      // Optional: remove from UI
-      setBlogs((prev) => prev.filter((b) => b.slug !== blogToDelete.slug));
 
-      // Clear modal state
+      setBlogs((prev) => prev.filter((blog) => blog.slug !== blogToDelete.slug));
+
       setShowModal(false);
       setBlogToDelete(null);
       setDeleteReason("");
       setConfirmationInput("");
-    } catch (err) {
-      toast.error("Failed to delete blog");
+    } else {
+
+      toast.error("Failed to delete blog. Please try again.");
     }
-  };
+  } catch (err) {
+
+    toast.error("Failed to delete blog. Server error occurred.");
+  }
+};
+
 
   return (
     localuser ? (

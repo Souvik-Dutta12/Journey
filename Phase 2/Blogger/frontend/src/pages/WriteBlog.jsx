@@ -6,6 +6,7 @@ import Footer from "../components/Footer"
 import { Button } from "../components/ui/moving-border";
 import { useAppContext } from "../context/AppContext";
 import { toast } from "react-toastify";
+import { Link } from "react-router";
 
 const WriteBlog = () => {
   const [authorName, setAuthorName] = useState("");
@@ -164,6 +165,11 @@ const handleSubmit = async (e) => {
             Write Your Own Blog
           </h1>
           <form onSubmit={handleSubmit} className="space-y-6 mt-5 ">
+             <span className="text-neutral-500 cursor-pointer w-auto hover:text-white duration-300 flex gap-1 items-center">
+              <Link to={"/collection"}> 
+              <i className="ri-arrow-left-long-line"></i>Back
+              </Link>
+            </span>
             {/* Author Name */}
             <div className="flex flex-col gap-1 md:w-1/3 sm:w-full">
               <label htmlFor="authorName" className="block text-md font-bold text-white">
