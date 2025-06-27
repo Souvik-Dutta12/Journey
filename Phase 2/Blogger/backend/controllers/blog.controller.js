@@ -150,35 +150,61 @@ const getBlogBySlug = asyncHandler(async (req, res) => {
 })
 
 const updateBlogDetails = asyncHandler(async (req, res) => {
-
-  const { slug } = req.params
+  const { slug } = req.params;
   if (!slug) {
-    throw new ApiError(404, "blog not found")
+    throw new ApiError(404, "Blog not found");
   }
-  const { title, newSlug, shortDescription, description, authorName } = req.body;
-  if (!title && !newSlugslug && !shortDescription && !description && !authorName) {
-    throw new ApiError(400, "any one of the fields should upadte to update the blog")
+
+  const {
+    title,
+    newSlug,
+    shortDescription,
+    description,
+    authorName,
+    status,
+    tags, // expected to be an array of tag *names* (strings)
+  } = req.body;
+
+  const hasAtLeastOneField =
+    title || newSlug || shortDescription || description || authorName || status || Array.isArray(tags);
+
+  if (!hasAtLeastOneField) {
+    throw new ApiError(400, "At least one field must be provided to update the blog");
+  }
+
+  const updateFields = {};
+
+  if (title) updateFields.title = title;
+  if (newSlug) updateFields.slug = newSlug;
+  if (shortDescription) updateFields.shortDescription = shortDescription;
+  if (description) updateFields.description = description;
+  if (authorName) updateFields.authorName = authorName;
+  if (status) updateFields.status = status;
+
+  // 🧠 Convert tag names to ObjectIds
+  if (Array.isArray(tags)) {
+    const tagIds = [];
+    for (const tagName of tags) {
+      const name = tagName.trim().toLowerCase();
+      let tag = await Tag.findOne({ name });
+      if (!tag) {
+        tag = await Tag.create({ name });
+      }
+      tagIds.push(tag._id);
+    }
+    updateFields.tags = tagIds; // even empty array is allowed
   }
 
   const blog = await Blog.findOneAndUpdate(
     { slug },
-    {
-      $set: {
-        title,
-        slug: newSlug,
-        shortDescription,
-        description,
-        authorName,
-      },
-    },
+    { $set: updateFields },
     { new: true }
-  )
+  );
 
-  return res.status(200)
-    .json(
-      new ApiResponse(200, blog, "Blog updated successfully")
-    )
-})
+  return res
+    .status(200)
+    .json(new ApiResponse(200, blog, "Blog updated successfully"));
+});
 
 const updatBlogCoverImage = asyncHandler(async (req, res) => {
 

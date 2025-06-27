@@ -274,7 +274,9 @@ const getBlogsByUser = asyncHandler(async (req, res) => {
                 as: "blogs",
                 pipeline: [
                     {
-                        $sort: {createdAt : -1}
+                        $sort: {updatedAt : -1,
+                            
+                        }
                     },
                     {
                         $project: {
@@ -287,6 +289,7 @@ const getBlogsByUser = asyncHandler(async (req, res) => {
                             tags: 1,
                             status: 1,
                             createdAt: 1,
+                            updatedAt: 1
                         },
                     },
                 ],

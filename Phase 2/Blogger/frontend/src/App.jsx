@@ -12,6 +12,8 @@ import Total from './pages/Total'
 import Draft from './pages/Draft'
 import { ToastContainer } from 'react-toastify';
 import { useAppContext } from './context/AppContext'
+import Update from './components/Update'
+import Continue from './components/Continue'
 
 const App = () => {
 
@@ -40,6 +42,8 @@ const App = () => {
         <Route path="/blogs/blog/:slug" element={<ReadBlog />} />
         <Route path='/total' element={<Total />} />
         <Route path='/draft' element={<Draft />} />
+        <Route path='/blogs/:slug' element={<Update />} />
+        <Route path='/blogs/continue/:slug' element={<Continue />} />
         <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Routes>
 
