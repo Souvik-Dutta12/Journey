@@ -15,7 +15,7 @@ const Footer = () => {
                     <h2 className="text-xl font-bold text-white mb-4">Quick Links</h2>
                     <ul className="space-y-2 text-md text-neutral-400">
                         <li><Link to={"/"} className="hover:text-[#7fcfec] transition duration-300">Home</Link></li>
-                        <li><Link to={"/blog"} className="hover:text-[#7fcfec] transition duration-300">Blogs</Link></li>
+                        <li><Link to={"/collection"} className="hover:text-[#7fcfec] transition duration-300">Blogs</Link></li>
                         <li><Link to={"/contact"} className="hover:text-[#7fcfec] transition duration-300">Contact</Link></li>
                     </ul>
                 </div>
@@ -23,7 +23,7 @@ const Footer = () => {
                 <div>
                     <h2 className="text-xl font-semibold text-white mb-2">Follow Me</h2>
                     <div className="flex space-x-4 text-lg text-neutral-400">
-                        <Link to={"#"}><i className="ri-github-fill hover:text-[#7fcfec] duration-300"></i></Link>
+                        <Link to={"https://github.com/Souvik-Dutta12"}><i className="ri-github-fill hover:text-[#7fcfec] duration-300"></i></Link>
                         <Link to={"#"}><i className="ri-twitter-x-fill hover:text-[#7fcfec] duration-300"></i></Link>
                         <Link to={"#"}><i className="ri-facebook-fill hover:text-[#7fcfec] duration-300"></i></Link>
                         <Link to={"#"}><i className="ri-instagram-line hover:text-[#7fcfec] duration-300"></i></Link>

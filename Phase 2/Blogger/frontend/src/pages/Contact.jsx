@@ -34,7 +34,7 @@ const Contact = () => {
 
   return (
     <>
-      <section className="md:min-h-screen z-20 md:w-screen sm:w-[85vw] flex items-center justify-center px-4  mt-10">
+      <section className="md:min-h-screen z-20 md:w-screen sm:w-[85vw] flex flex-col md:flex-row items-center justify-center px-4  mt-10">
         <div className="w-full z-40 max-w-2xl bg-transparent flex flex-col  rounded-xl shadow-md md:p-10 sm:p-5 space-y-5">
           <h2 className="font-bold  text-center relative z-10 text-4xl sm:text-5xl md:text-6xl lg:text-7xl  bg-clip-text  text-transparent bg-gradient-to-b from-white to-neutral-500 font-sans leading-tight ">
             Contact Us

@@ -24,6 +24,7 @@ const CollectionHero = () => {
   const [filteredBlogs, setFilteredBlogs] = useState([]);
   const [totalFilteredCount, setTotalFilteredCount] = useState(0);
 
+
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
   const { axios, navigate, blogs } = useAppContext();
@@ -32,7 +33,7 @@ const CollectionHero = () => {
 
   const currentBlogs = filteredBlogs;
 
-  const startIndex = (currentPage - 1) * postsPerPage;
+
 
 
   const fetchTags = async () => {
@@ -73,31 +74,23 @@ const CollectionHero = () => {
     });
   };
 
-  const fetchPublishedBlogs = async () => {
+  const fetchUserBlogs = async () => {
     try {
-      const res = await axios.get("/blogs/blog");
-      const blogs = res.data.data.blogs;
-      const temp = blogs.filter(blog => blog.status === "published");
-      setPublishedBlogs(temp);
+      const res = await axios.get(`/users/user/${user._id}/blogs`);
+      const allUserBlogs = res.data.data;
+      setPublishedBlogs(allUserBlogs.filter(blog => blog.status === "published"));
+      setDraftBlogs(allUserBlogs.filter(blog => blog.status === "draft"));
     } catch (err) {
 
     }
   }
-  const fetchDraftBlogs = async () => {
-    try {
-      const res = await axios.get("/blogs/blog");
-      const blogs = res.data.data.blogs;
-      const temp = blogs.filter(blog => blog.status === "draft");
-      setDraftBlogs(temp);
-    } catch (err) {
 
-    }
-  }
   useEffect(() => {
 
-    fetchPublishedBlogs();
-    fetchDraftBlogs();
-  }, [blogs]);
+    if(!user?._id || !token) return;
+    fetchUserBlogs();
+
+  }, [user,token,blogs]);
 
   const fetchFilteredBlogs = async () => {
     try {

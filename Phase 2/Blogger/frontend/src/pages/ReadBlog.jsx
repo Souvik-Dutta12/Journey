@@ -212,7 +212,15 @@ const ReadBlog = () => {
 
         {/* Comment Section */}
         <div className="mt-15">
-          <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-neutral-800 dark:text-white">Comments</h2>
+          <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-neutral-800 dark:text-white">Comments
+            { 
+              comments.length !== 0 ? (
+              <span className='ml-3 text-sm font-semibold text-neutral-500'>
+                {comments.length}
+              </span>
+              ) : (null)
+            }
+          </h2>
 
           {user ? (<form onSubmit={handleCommentSubmit} className="mb-6">
             <input
