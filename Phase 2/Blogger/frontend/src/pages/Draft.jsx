@@ -35,7 +35,7 @@ const Draft = () => {
 
           <h1 className='relative z-10 text-3xl sm:text-3xl md:text-4xl lg:text-5xl mt-5 md:mt-40 sm:mt-5 bg-clip-text h-35  text-transparent bg-gradient-to-b from-white to-neutral-500  text-center font-sans font-bold leading-tight'>
             {
-              userBlogs.length !==0 ? "Your drafts" : "No drafts yet"
+              userBlogs.length !== 0 ? "Your drafts" : "No drafts yet"
             }
           </h1>
           <div className="w-full md:w-full sm:w-[90vw] -mt-15 md:-mt-10 sm:-mt-15 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 justify-items-center pr-5 md:pr-3 sm:pr-5 pl-5 md:pl-0 sm:pl-5">
@@ -71,9 +71,9 @@ const Draft = () => {
                       href={`/blogs/continue/${encodeURIComponent(blog.slug)}`}
                       className="px-4 py-2 rounded-xl text-lg font-normal dark:text-white hover:text-[#7fcfec]"
                     >
-                     <Link to={`/blogs/continue/${encodeURIComponent(blog.slug)}`}>
-                      Continue blog →
-                     </Link>
+                      <Link to={`/blogs/continue/${encodeURIComponent(blog.slug)}`}>
+                        Continue blog →
+                      </Link>
                     </CardItem>
 
 

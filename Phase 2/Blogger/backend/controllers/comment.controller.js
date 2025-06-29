@@ -13,11 +13,11 @@ const createComment = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Blog not found");
   }
 
-  const blog = await Blog.findOne({slug});
+  const blog = await Blog.findOne({ slug });
   const blogId = blog?._id;
 
-  if(!blogId){
-    throw new ApiError(404,"Blog not found");
+  if (!blogId) {
+    throw new ApiError(404, "Blog not found");
   }
 
   if (!userId) {
@@ -45,29 +45,29 @@ const createComment = asyncHandler(async (req, res) => {
   );
 });
 
-const getCommentsByBlog = asyncHandler(async (req,res)=>{
-  const {slug} = req.params;
+const getCommentsByBlog = asyncHandler(async (req, res) => {
+  const { slug } = req.params;
 
-  if(!slug){
-    throw new ApiError(404,"Blog not found");
+  if (!slug) {
+    throw new ApiError(404, "Blog not found");
   }
 
-  const blog = await Blog.findOne({slug});
+  const blog = await Blog.findOne({ slug });
 
-  if(!blog){
-    throw new ApiError(404,"Blog not found");
+  if (!blog) {
+    throw new ApiError(404, "Blog not found");
   }
 
-  const comments = await Comment.find({blog:blog?._id}).populate("user", "username email profileImage").sort({createdAt:-1});
+  const comments = await Comment.find({ blog: blog?._id }).populate("user", "username email profileImage").sort({ createdAt: -1 });
 
-  if(!comments || comments.length === 0){
-    throw new ApiError(404,"No comments found for this blog")
+  if (!comments || comments.length === 0) {
+    throw new ApiError(404, "No comments found for this blog")
   }
 
   return res.status(200)
-  .json(
-    new ApiResponse(200,comments,"Comments fetched successfully")
-  )
+    .json(
+      new ApiResponse(200, comments, "Comments fetched successfully")
+    )
 })
 
 const toggleLove = asyncHandler(async (req, res) => {
@@ -136,7 +136,7 @@ const deleteComment = asyncHandler(async (req, res) => {
   );
 });
 
-export{
+export {
   createComment,
   getCommentsByBlog,
   toggleLove,

@@ -10,7 +10,7 @@ const Total = () => {
 
   const localuser = JSON.parse(localStorage.getItem("user"));
 
-  const { user,setBlogs,blogs, axios } = useAppContext();
+  const { user, setBlogs, blogs, axios } = useAppContext();
 
   const [userBlogs, setUserBlogs] = useState([]);
 
@@ -35,36 +35,36 @@ const Total = () => {
     if (user && user._id) {
       fetchUserBlogs()
     }
-  }, [user,blogs])
+  }, [user, blogs])
 
-const handleDeleteBlog = async () => {
-  if (!blogToDelete || !blogToDelete.slug) {
-    return toast.error("Invalid blog selected for deletion");
-  }
-
-  try {
-
-    const response = await axios.delete(`/blogs/blog/${blogToDelete.slug}`);
-
-    if (response.status === 200) {
-      toast.success("Blog deleted successfully");
-
-
-      setBlogs((prev) => prev.filter((blog) => blog.slug !== blogToDelete.slug));
-
-      setShowModal(false);
-      setBlogToDelete(null);
-      setDeleteReason("");
-      setConfirmationInput("");
-    } else {
-
-      toast.error("Failed to delete blog. Please try again.");
+  const handleDeleteBlog = async () => {
+    if (!blogToDelete || !blogToDelete.slug) {
+      return toast.error("Invalid blog selected for deletion");
     }
-  } catch (err) {
 
-    toast.error("Failed to delete blog. Server error occurred.");
-  }
-};
+    try {
+
+      const response = await axios.delete(`/blogs/blog/${blogToDelete.slug}`);
+
+      if (response.status === 200) {
+        toast.success("Blog deleted successfully");
+
+
+        setBlogs((prev) => prev.filter((blog) => blog.slug !== blogToDelete.slug));
+
+        setShowModal(false);
+        setBlogToDelete(null);
+        setDeleteReason("");
+        setConfirmationInput("");
+      } else {
+
+        toast.error("Failed to delete blog. Please try again.");
+      }
+    } catch (err) {
+
+      toast.error("Failed to delete blog. Server error occurred.");
+    }
+  };
 
 
   return (
@@ -180,8 +180,8 @@ const handleDeleteBlog = async () => {
                   onClick={handleDeleteBlog}
                   disabled={confirmationInput.trim() !== blogToDelete.title}
                   className={`px-4 py-2  rounded-xl text-white ${confirmationInput.trim() === blogToDelete.title
-                      ? "bg-red-500 hover:bg-red-700 cursor-pointer"
-                      : "bg-red-300 cursor-not-allowed"
+                    ? "bg-red-500 hover:bg-red-700 cursor-pointer"
+                    : "bg-red-300 cursor-not-allowed"
                     }`}
                 >
                   Delete

@@ -1,10 +1,10 @@
-import mongoose,{Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 const userSchema = new Schema(
     {
-        username:{
+        username: {
             type: String,
             required: true,
             unique: true,
@@ -12,48 +12,48 @@ const userSchema = new Schema(
             trim: true,
             index: true
         },
-        email:{
+        email: {
             type: String,
-            required:true,
-            unique:true,
-            lowercase:true,
-            trim:true,
-            
+            required: true,
+            unique: true,
+            lowercase: true,
+            trim: true,
+
         },
-        profileImage:{
-            type:String, //cloudinary
+        profileImage: {
+            type: String, //cloudinary
         },
-        password:{
-            type:String,
-            required:[true,'Password is required'],
+        password: {
+            type: String,
+            required: [true, 'Password is required'],
             minlength: [6, 'Password must be at least 6 characters long'],
         },
-        blogs:[
+        blogs: [
             {
                 type: Schema.Types.ObjectId,
                 ref: 'Blog'
             }
         ],
-        refreshToken:{
-            type:String,
+        refreshToken: {
+            type: String,
         }
     },
-    {timestamps:true}
+    { timestamps: true }
 )
 
 userSchema.pre("save", async function (next) {
-    if(!this.isModified("password")) return next();
+    if (!this.isModified("password")) return next();
 
-    this.password = await bcrypt.hash(this.password,10);
+    this.password = await bcrypt.hash(this.password, 10);
 
     next();
 })
 
-userSchema.methods.isPasswordCorrect = async function (password){
+userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password);
 }
 
-userSchema.methods.generateAccessToken = function(){
+userSchema.methods.generateAccessToken = function () {
     return jwt.sign(
         {
             _id: this._id,
@@ -68,7 +68,7 @@ userSchema.methods.generateAccessToken = function(){
     )
 }
 
-userSchema.methods.generateRefreshToken = function(){
+userSchema.methods.generateRefreshToken = function () {
     return jwt.sign(
         {
             _id: this._id,

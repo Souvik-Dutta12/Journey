@@ -290,34 +290,34 @@ const ReadBlog = () => {
           </div>
 
         </div>
-          
-          {showDeleteModal && (
-                      <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-100 flex items-center justify-center">
-                        <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-xl p-6 w-[90%] max-w-md text-center border border-zinc-700">
-                          <h2 className="text-xl font-semibold text-red-600 mb-4">Delete Comment?</h2>
-                          <p className="text-sm text-neutral-600 dark:text-neutral-300 mb-6">
-                            Are you sure you want to delete this comment? This action cannot be undone.
-                          </p>
-                          <div className="flex justify-center gap-4">
-                            <button
-                              onClick={() => {
-                                handleDelete(commentToDelete);
-                                setShowDeleteModal(false);
-                              }}
-                              className="bg-red-500 text-white px-4 py-2 rounded-xl cursor-pointer hover:bg-red-600"
-                            >
-                              Yes, Delete
-                            </button>
-                            <button
-                              onClick={() => setShowDeleteModal(false)}
-                              className="bg-zinc-300 dark:bg-zinc-700 text-black dark:text-white px-4 py-2 rounded-xl cursor-pointer hover:bg-zinc-400 dark:hover:bg-zinc-600"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
+
+        {showDeleteModal && (
+          <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-100 flex items-center justify-center">
+            <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-xl p-6 w-[90%] max-w-md text-center border border-zinc-700">
+              <h2 className="text-xl font-semibold text-red-600 mb-4">Delete Comment?</h2>
+              <p className="text-sm text-neutral-600 dark:text-neutral-300 mb-6">
+                Are you sure you want to delete this comment? This action cannot be undone.
+              </p>
+              <div className="flex justify-center gap-4">
+                <button
+                  onClick={() => {
+                    handleDelete(commentToDelete);
+                    setShowDeleteModal(false);
+                  }}
+                  className="bg-red-500 text-white px-4 py-2 rounded-xl cursor-pointer hover:bg-red-600"
+                >
+                  Yes, Delete
+                </button>
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  className="bg-zinc-300 dark:bg-zinc-700 text-black dark:text-white px-4 py-2 rounded-xl cursor-pointer hover:bg-zinc-400 dark:hover:bg-zinc-600"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
 
 

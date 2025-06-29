@@ -14,9 +14,9 @@ const router = Router();
 router.route("/comment/:slug").get(getCommentsByBlog)
 
 //secured routes
-router.route("/comment/:slug/create").post(verifyJWT,createComment)
-router.route("/comment/:commentId/toggle").patch(verifyJWT,toggleLove)
-router.route("/comment/:commentId").delete(verifyJWT,deleteComment)
+router.route("/comment/:slug/create").post(verifyJWT, createComment)
+router.route("/comment/:commentId/toggle").patch(verifyJWT, toggleLove)
+router.route("/comment/:commentId").delete(verifyJWT, deleteComment)
 
 export default router;
 

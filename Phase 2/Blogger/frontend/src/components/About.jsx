@@ -5,7 +5,7 @@ import {
 } from "./ui/draggable-card";
 
 const About = () => {
-    const items = [
+  const items = [
     {
       title: "Tyler Durden",
       image:
@@ -51,26 +51,26 @@ const About = () => {
   ];
   return (
     <div className='w-screen md:w-screen sm:w-[85vw] min-h-screen md:min-h-screen sm:min-h-10 mt-90 md:mt-90 sm:mt-0' >
-        <DraggableCardContainer className="relative flex md:flex sm:hidden md:min-h-screen   w-full items-center justify-center overflow-clip">
-      
-      {items.map((item,index) => (
-        <DraggableCardBody key={index} className={item.className}>
-          <img
-            src={item.image}
-            alt={item.title}
-            className="pointer-events-none relative z-10 h-52 w-52 sm:h-64 sm:w-64 md:h-72 md:w-72 lg:h-80 lg:w-80 object-cover"
-          />
-          <h3 className="mt-4 text-center text-2xl font-bold text-neutral-700 dark:text-neutral-300">
-            {item.title}
-          </h3>
-        </DraggableCardBody>
-      ))}
-    </DraggableCardContainer>
+      <DraggableCardContainer className="relative flex md:flex sm:hidden md:min-h-screen   w-full items-center justify-center overflow-clip">
+
+        {items.map((item, index) => (
+          <DraggableCardBody key={index} className={item.className}>
+            <img
+              src={item.image}
+              alt={item.title}
+              className="pointer-events-none relative z-10 h-52 w-52 sm:h-64 sm:w-64 md:h-72 md:w-72 lg:h-80 lg:w-80 object-cover"
+            />
+            <h3 className="mt-4 text-center text-2xl font-bold text-neutral-700 dark:text-neutral-300">
+              {item.title}
+            </h3>
+          </DraggableCardBody>
+        ))}
+      </DraggableCardContainer>
       <div className='max-w-3xl mx-auto h-auto -mt-20 md:-mt-20 sm:mt-0 z-0'>
-      <h1 className=' text-5xl sm:text-5xl md:text-7xl lg:text-7xl bg-clip-text h-30 text-transparent bg-gradient-to-b from-white to-neutral-700  text-center font-sans font-bold'>About Us</h1>
-      <p className='text-neutral-400 max-w-4xl mx-auto -mt-3 text-lg text-center '>
-        Welcome to Blogger, your go-to platform for sharing ideas, stories, and expertise with the world. Whether you're a passionate writer, a curious reader, or someone eager to build a personal brand, Blogger empowers you with the tools to create, publish, and grow your own blog with ease. Our mission is to make blogging simple, accessible, and enjoyable for everyone — from beginners to seasoned content creators. With a clean interface, powerful editor, and seamless customization options, Blogger helps you focus on what truly matters: your voice and your content. Join our community and start your blogging journey today!
-      </p>
+        <h1 className=' text-5xl sm:text-5xl md:text-7xl lg:text-7xl bg-clip-text h-30 text-transparent bg-gradient-to-b from-white to-neutral-700  text-center font-sans font-bold'>About Us</h1>
+        <p className='text-neutral-400 max-w-4xl mx-auto -mt-3 text-lg text-center '>
+          Welcome to Blogger, your go-to platform for sharing ideas, stories, and expertise with the world. Whether you're a passionate writer, a curious reader, or someone eager to build a personal brand, Blogger empowers you with the tools to create, publish, and grow your own blog with ease. Our mission is to make blogging simple, accessible, and enjoyable for everyone — from beginners to seasoned content creators. With a clean interface, powerful editor, and seamless customization options, Blogger helps you focus on what truly matters: your voice and your content. Join our community and start your blogging journey today!
+        </p>
       </div>
 
     </div>

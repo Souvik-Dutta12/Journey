@@ -25,7 +25,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
 const signUpUser = asyncHandler(
     async (req, res) => {
         // check for existing email/username
-        
+
         const { email, password, username } = req.body;
 
         if (!email || !password || !username) {
@@ -252,7 +252,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         }
         updateFields.profileImage = uploadedImage.url;
     }
-    
+
     const updatedUser = await User.findByIdAndUpdate(
         req.user._id,
         { $set: updateFields },
@@ -291,8 +291,9 @@ const getBlogsByUser = asyncHandler(async (req, res) => {
                 as: "blogs",
                 pipeline: [
                     {
-                        $sort: {updatedAt : -1,
-                            
+                        $sort: {
+                            updatedAt: -1,
+
                         }
                     },
                     {

@@ -22,11 +22,11 @@ router.route("/blog/:slug").get(getBlogBySlug)
 router.route("/tags").get(getBlogsByTags)
 
 //secured route
-router.route("/blog/create").post(verifyJWT,upload.single("coverImage"),createBlog)
-router.route("/blog/preview").post(verifyJWT,generateAIDescriptionOnly)
-router.route("/blog/:slug").patch(verifyJWT,updateBlogDetails)
-router.route("/blog/:slug/cover-image").patch(verifyJWT,upload.single("coverImage"),updatBlogCoverImage)
-router.route("/blog/:slug").delete(verifyJWT,deleteBlog)
-router.route("/blog/:slug/status").patch(verifyJWT,toggleStatus)
+router.route("/blog/create").post(verifyJWT, upload.single("coverImage"), createBlog)
+router.route("/blog/preview").post(verifyJWT, generateAIDescriptionOnly)
+router.route("/blog/:slug").patch(verifyJWT, updateBlogDetails)
+router.route("/blog/:slug/cover-image").patch(verifyJWT, upload.single("coverImage"), updatBlogCoverImage)
+router.route("/blog/:slug").delete(verifyJWT, deleteBlog)
+router.route("/blog/:slug/status").patch(verifyJWT, toggleStatus)
 
 export default router;

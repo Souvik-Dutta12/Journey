@@ -50,12 +50,17 @@ const Nav = ({ className }) => {
                 className={cn("fixed hidden sm:hidden md:block top-10 inset-x-0 max-w-4xl mx-auto z-100 ", className)}
             >
                 {user && (
-                    <button className="absolute -left-70 top-7 max-w-72 flex items-center cursor-pointer justify-center text-lg gap-3">
+                    <button className="absolute lg:-left-70 lg:top-7 max-w-72 flex items-center cursor-pointer justify-center text-lg gap-3">
                         <Link to={`/users/user/${user._id}`} className="flex items-center justify-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-red-500 overflow-hidden">
                                 <img
+                                    key={user.profileImage || user.username} // 🔁 triggers update on image change
                                     className="w-full h-full object-cover"
-                                    src={user.profileImage || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.username)}&backgroundColor=3f3f46,b0f0cb&fontWeight=400`}
+                                    src={
+                                        user.profileImage?.startsWith("http")
+                                            ? user.profileImage
+                                            : `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.username)}&backgroundColor=3f3f46,b0f0cb&fontWeight=400`
+                                    }
                                     alt="user avatar"
                                 />
                             </div>
@@ -63,6 +68,7 @@ const Nav = ({ className }) => {
                         </Link>
                     </button>
                 )}
+
 
                 <Menu setActive={setActive} >
 
@@ -78,10 +84,10 @@ const Nav = ({ className }) => {
                                 </Link>
                                 <MenuItem setActive={setActive} active={active} item="Services">
                                     <div className="flex flex-col space-y-4 text-sm">
-                                        <HoveredLink href="/web-dev">Web Development</HoveredLink>
-                                        <HoveredLink href="/interface-design">Interface Design</HoveredLink>
-                                        <HoveredLink href="/seo">Search Engine Optimization</HoveredLink>
-                                        <HoveredLink href="/branding">Branding</HoveredLink>
+                                        <HoveredLink href="/">Web Development</HoveredLink>
+                                        <HoveredLink href="/">Interface Design</HoveredLink>
+                                        <HoveredLink href="/">Search Engine Optimization</HoveredLink>
+                                        <HoveredLink href="/">Branding</HoveredLink>
                                     </div>
                                 </MenuItem>
                                 <MenuItem setActive={setActive} active={active} item="Products">
@@ -112,14 +118,10 @@ const Nav = ({ className }) => {
                                         />
                                     </div>
                                 </MenuItem>
-                                <MenuItem setActive={setActive} active={active} item="Pricing">
-                                    <div className="flex flex-col space-y-4 text-sm">
-                                        <HoveredLink href="/hobby">Hobby</HoveredLink>
-                                        <HoveredLink href="/individual">Individual</HoveredLink>
-                                        <HoveredLink href="/team">Team</HoveredLink>
-                                        <HoveredLink href="/enterprise">Enterprise</HoveredLink>
-                                    </div>
-                                </MenuItem>
+
+                                <Link to={"/contact"}>
+                                    <MenuItem setActive={setActive} active={active} item={"Contact Us"} />
+                                </Link>
 
                                 <Link to={"/collection"}>
                                     <MenuItem setActive={setActive} active={active} item={"Collection"} />
@@ -195,17 +197,17 @@ const Nav = ({ className }) => {
             {sidebarOpen && (
                 <div className="lg:hidden absolute top-20 left-0 z-100 right-0 bg-white dark:bg-black shadow-xl p-6 space-y-4 duration-500 rounded-xl">
                     <Link to="/" onClick={toggleSidebar} className="block hover:text-[#7fcfec]">Home</Link>
-                    <Link to="/web-dev" onClick={toggleSidebar} className="block hover:text-[#7fcfec]">Services</Link>
-                    <Link to="/interface-design" onClick={toggleSidebar} className="block hover:text-[#7fcfec]">Products</Link>
-                    <Link to="/seo" onClick={toggleSidebar} className="block hover:text-[#7fcfec]">Pricing</Link>
+                    <Link to="/" onClick={toggleSidebar} className="block hover:text-[#7fcfec]">Services</Link>
+                    <Link to="/" onClick={toggleSidebar} className="block hover:text-[#7fcfec]">Products</Link>
+                    <Link to="/contact" onClick={toggleSidebar} className="block hover:text-[#7fcfec]">Contact Us</Link>
                     <Link to="/collection" onClick={toggleSidebar} className="block hover:text-[#7fcfec]">Collection</Link>
 
                     {user ? (
                         <>
-                        <Link to={`/users/user/${user._id}`}  onClick={toggleSidebar} className="block hover:text-[#7fcfec]">Profile</Link>
-                        <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
-                            <button onClick={handleLogout} className="block cursor-pointer border w-1/3 px-2 py-2 text-center rounded-full hover:text-[#7fcfec]">Log out</button>
-                        </div>
+                            <Link to={`/users/user/${user._id}`} onClick={toggleSidebar} className="block hover:text-[#7fcfec]">Profile</Link>
+                            <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
+                                <button onClick={handleLogout} className="block cursor-pointer border w-1/3 px-2 py-2 text-center rounded-full hover:text-[#7fcfec]">Log out</button>
+                            </div>
                         </>
                     ) : (
                         <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-2">

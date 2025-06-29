@@ -8,12 +8,12 @@ import { toast } from 'react-toastify';
 const Hero = () => {
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user"));
-    const {navigate} = useAppContext();
+    const { navigate } = useAppContext();
     const handleGetStarted = () => {
-        if(token && user){
+        if (token && user) {
             navigate("/collection");
         }
-        else{
+        else {
             navigate("/login");
             toast.error("please login to access our collection");
         }
@@ -31,7 +31,7 @@ const Hero = () => {
                 <div className='mx-auto max-w-xl  flex items-center justify-center mt-5'>
 
                     <Button
-                        onClick ={handleGetStarted}
+                        onClick={handleGetStarted}
                         borderRadius="1.75rem"
                         className="bg-white dark:bg-black/90 z-40 cursor-pointer text-black dark:text-white border-neutral-200 dark:border-slate-800 flex gap-3"
                     >
@@ -39,7 +39,7 @@ const Hero = () => {
                     </Button>
 
                 </div>
-                
+
             </div>
             <BackgroundBeams />
         </div>

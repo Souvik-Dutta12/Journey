@@ -103,52 +103,52 @@ const Update = () => {
     setTags(tags.filter((_, i) => i !== index));
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!title || !slug || !shortDescription || !authorName || !description) {
-    return toast.error("Please fill in all required fields.");
-  }
-
-  setIsSubmitting(true);
-
-  try {
-    // Build the payload dynamically
-    const detailsPayload = {};
-
-    if (title) detailsPayload.title = title;
-    if (slug) detailsPayload.newSlug = slug;
-    if (shortDescription) detailsPayload.shortDescription = shortDescription;
-    if (description) detailsPayload.description = description;
-    if (authorName) detailsPayload.authorName = authorName;
-    if (status) detailsPayload.status = status;
-    if (Array.isArray(tags)) detailsPayload.tags = tags.map(tag=> typeof tag === "string" ? tag : tag.name); // include even empty array
-
-    // 1. Update blog details
-    await axios.patch(`/blogs/blog/${blogSlug}`, detailsPayload);
-
-    // 2. Update cover image only if a new file is selected
-    if (coverImage && typeof coverImage !== "string") {
-      const formData = new FormData();
-      formData.append("coverImage", coverImage);
-
-      await axios.patch(`/blogs/blog/${blogSlug}/cover-image`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+    if (!title || !slug || !shortDescription || !authorName || !description) {
+      return toast.error("Please fill in all required fields.");
     }
 
-    toast.success("Blog updated successfully!");
-    navigate("/draft");
-  } catch (error) {
-    toast.error(
-      error?.response?.data?.message || "Failed to update blog."
-    );
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+    setIsSubmitting(true);
+
+    try {
+      // Build the payload dynamically
+      const detailsPayload = {};
+
+      if (title) detailsPayload.title = title;
+      if (slug) detailsPayload.newSlug = slug;
+      if (shortDescription) detailsPayload.shortDescription = shortDescription;
+      if (description) detailsPayload.description = description;
+      if (authorName) detailsPayload.authorName = authorName;
+      if (status) detailsPayload.status = status;
+      if (Array.isArray(tags)) detailsPayload.tags = tags.map(tag => typeof tag === "string" ? tag : tag.name); // include even empty array
+
+      // 1. Update blog details
+      await axios.patch(`/blogs/blog/${blogSlug}`, detailsPayload);
+
+      // 2. Update cover image only if a new file is selected
+      if (coverImage && typeof coverImage !== "string") {
+        const formData = new FormData();
+        formData.append("coverImage", coverImage);
+
+        await axios.patch(`/blogs/blog/${blogSlug}/cover-image`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
+
+      toast.success("Blog updated successfully!");
+      navigate("/draft");
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Failed to update blog."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
 
 
@@ -198,8 +198,8 @@ const Update = () => {
           <form onSubmit={handleSubmit} className="space-y-6 mt-5 ">
 
             <span className="text-neutral-500 cursor-pointer w-auto hover:text-white duration-300 flex gap-1 items-center">
-              <Link to={"/draft"}> 
-              <i className="ri-arrow-left-long-line"></i>Back
+              <Link to={"/draft"}>
+                <i className="ri-arrow-left-long-line"></i>Back
               </Link>
             </span>
             {/* Author Name */}
@@ -410,27 +410,27 @@ const Update = () => {
             ) : (
               <div className="flex mx-auto justify-center gap-6 mt-10 mb-15">
                 <div className=" flex justify-center text-center">
-                      <HoverBorderGradient
-                        containerClassName="rounded-full"
-                        as="button"
-                        type="submit"
-                        onClick={() => setStatus("draft")}
-                        className="px-7 py-3 dark:bg-zinc-800 cursor-pointer bg-white text-black dark:text-white flex items-center space-x-2"
-                      >
-                        <span className="hover:text-[#7fcfec] duration-300">Save blog</span>
-                      </HoverBorderGradient>
-                    </div>
-                    <div className=" flex justify-center text-center">
-                      <HoverBorderGradient
-                        containerClassName="rounded-full"
-                        as="button"
-                        type="submit"
-                        onClick={() => setStatus("published")}
-                        className="px-7 py-3 dark:bg-zinc-900 cursor-pointer bg-white text-black dark:text-white flex items-center space-x-2"
-                      >
-                        <span className="hover:text-[#7fcfec] duration-300">Post blog</span>
-                      </HoverBorderGradient>
-                    </div>
+                  <HoverBorderGradient
+                    containerClassName="rounded-full"
+                    as="button"
+                    type="submit"
+                    onClick={() => setStatus("draft")}
+                    className="px-7 py-3 dark:bg-zinc-800 cursor-pointer bg-white text-black dark:text-white flex items-center space-x-2"
+                  >
+                    <span className="hover:text-[#7fcfec] duration-300">Save blog</span>
+                  </HoverBorderGradient>
+                </div>
+                <div className=" flex justify-center text-center">
+                  <HoverBorderGradient
+                    containerClassName="rounded-full"
+                    as="button"
+                    type="submit"
+                    onClick={() => setStatus("published")}
+                    className="px-7 py-3 dark:bg-zinc-900 cursor-pointer bg-white text-black dark:text-white flex items-center space-x-2"
+                  >
+                    <span className="hover:text-[#7fcfec] duration-300">Post blog</span>
+                  </HoverBorderGradient>
+                </div>
               </div>
             )}
 

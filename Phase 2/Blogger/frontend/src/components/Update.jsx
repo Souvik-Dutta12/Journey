@@ -103,52 +103,52 @@ const Update = () => {
     setTags(tags.filter((_, i) => i !== index));
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!title || !slug || !shortDescription || !authorName || !description) {
-    return toast.error("Please fill in all required fields.");
-  }
-
-  setIsSubmitting(true);
-
-  try {
-    // Build the payload dynamically
-    const detailsPayload = {};
-
-    if (title) detailsPayload.title = title;
-    if (slug) detailsPayload.newSlug = slug;
-    if (shortDescription) detailsPayload.shortDescription = shortDescription;
-    if (description) detailsPayload.description = description;
-    if (authorName) detailsPayload.authorName = authorName;
-    if (status) detailsPayload.status = status;
-    if (Array.isArray(tags)) detailsPayload.tags = tags.map(tag=> typeof tag === "string" ? tag : tag.name); // include even empty array
-
-    // 1. Update blog details
-    await axios.patch(`/blogs/blog/${blogSlug}`, detailsPayload);
-
-    // 2. Update cover image only if a new file is selected
-    if (coverImage && typeof coverImage !== "string") {
-      const formData = new FormData();
-      formData.append("coverImage", coverImage);
-
-      await axios.patch(`/blogs/blog/${blogSlug}/cover-image`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+    if (!title || !slug || !shortDescription || !authorName || !description) {
+      return toast.error("Please fill in all required fields.");
     }
 
-    toast.success("Blog updated successfully!");
-    navigate("/total");
-  } catch (error) {
-    toast.error(
-      error?.response?.data?.message || "Failed to update blog."
-    );
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+    setIsSubmitting(true);
+
+    try {
+      // Build the payload dynamically
+      const detailsPayload = {};
+
+      if (title) detailsPayload.title = title;
+      if (slug) detailsPayload.newSlug = slug;
+      if (shortDescription) detailsPayload.shortDescription = shortDescription;
+      if (description) detailsPayload.description = description;
+      if (authorName) detailsPayload.authorName = authorName;
+      if (status) detailsPayload.status = status;
+      if (Array.isArray(tags)) detailsPayload.tags = tags.map(tag => typeof tag === "string" ? tag : tag.name); // include even empty array
+
+      // 1. Update blog details
+      await axios.patch(`/blogs/blog/${blogSlug}`, detailsPayload);
+
+      // 2. Update cover image only if a new file is selected
+      if (coverImage && typeof coverImage !== "string") {
+        const formData = new FormData();
+        formData.append("coverImage", coverImage);
+
+        await axios.patch(`/blogs/blog/${blogSlug}/cover-image`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
+
+      toast.success("Blog updated successfully!");
+      navigate("/total");
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Failed to update blog."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
 
 
@@ -196,11 +196,11 @@ const Update = () => {
             Update Your Blog
           </h1>
           <form onSubmit={handleSubmit} className="space-y-6 mt-5 ">
-             <span className="text-neutral-500 cursor-pointer w-auto hover:text-white duration-300 flex gap-1 items-center">
-                          <Link to={"/total"}> 
-                          <i className="ri-arrow-left-long-line"></i>Back
-                          </Link>
-                        </span>
+            <span className="text-neutral-500 cursor-pointer w-auto hover:text-white duration-300 flex gap-1 items-center">
+              <Link to={"/total"}>
+                <i className="ri-arrow-left-long-line"></i>Back
+              </Link>
+            </span>
             {/* Author Name */}
             <div className="flex flex-col gap-1 md:w-1/3 sm:w-full">
               <label htmlFor="authorName" className="block text-md font-bold text-white">

@@ -41,21 +41,21 @@ const blogSchema = new Schema(
                     ref: "Tag"
                 }
             ],
-        status:{
-            type:String,
-            enum:['draft','published'],
-            default:'draft',
+        status: {
+            type: String,
+            enum: ['draft', 'published'],
+            default: 'draft',
         }
 
     }, { timestamps: true }
 )
 
 //slugify
-blogSchema.pre('validate',function(next){
+blogSchema.pre('validate', function (next) {
     if (this.title && !this.slug) {
-    this.slug = slugify(this.title, { lower: true, strict: true });
-  }
-  next(); 
+        this.slug = slugify(this.title, { lower: true, strict: true });
+    }
+    next();
 })
 
 

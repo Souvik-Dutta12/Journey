@@ -7,7 +7,7 @@ import { HoverBorderGradient } from '../components/ui/hover-border-gradient';
 
 const Profile = () => {
 
-    const { axios, navigate, setUser} = useAppContext();
+    const { axios, navigate, setUser } = useAppContext();
 
     const user = JSON.parse(localStorage.getItem("user"));
 
@@ -16,78 +16,78 @@ const Profile = () => {
     const [loading, setLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [password, setPassword] = useState('');
-    
-    
+
+
     const [profileImage, setProfileImage] = useState(user?.profileImage || '');
     const [profileImageFile, setProfileImageFile] = useState(null); // to upload
 
 
-const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        setProfileImageFile(file); // for uploading
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setProfileImage(reader.result); // for previewing
-        };
-        reader.readAsDataURL(file);
-    }
-};
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setProfileImageFile(file); // for uploading
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setProfileImage(reader.result); // for previewing
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
 
 
-const handleUpdate = async () => {
-    if (!username && !email && !profileImageFile) {
-        return toast.error("No changes to update.");
-    }
-
-    if (!password) {
-        return toast.error("Password is required to update profile.");
-    }
-
-    setLoading(true);
-    try {
-        const formData = new FormData();
-        formData.append("password", password);
-        if (username) formData.append("username", username);
-        if (email) formData.append("email", email);
-
-        // ✅ Only upload the actual file
-        if (profileImageFile) {
-            formData.append("profileImage", profileImageFile);
+    const handleUpdate = async () => {
+        if (!username && !email && !profileImageFile) {
+            return toast.error("No changes to update.");
         }
 
-        const response = await axios.patch("/users/user/update-profile", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        });
-
-        const updatedUser = response.data?.data;
-
-        if (!updatedUser || !updatedUser._id) {
-            toast.error("Update failed: user data not returned");
-            return;
+        if (!password) {
+            return toast.error("Password is required to update profile.");
         }
-        
 
-        toast.success("Profile updated successfully!");
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-        setProfileImage(updatedUser.profileImage); // preview new image
-        setProfileImageFile(null); // reset file
-        setUser(updatedUser)
+        setLoading(true);
+        try {
+            const formData = new FormData();
+            formData.append("password", password);
+            if (username) formData.append("username", username);
+            if (email) formData.append("email", email);
 
-        setShowModal(false);
-        navigate(`/users/user/${updatedUser._id}`);
+            // ✅ Only upload the actual file
+            if (profileImageFile) {
+                formData.append("profileImage", profileImageFile);
+            }
 
-    } catch (err) {
-        const message = err?.response?.data?.message || err.message || "Unknown error";
+            const response = await axios.patch("/users/user/update-profile", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
 
-        toast.error("Update failed: " + message);
-    } finally {
-        setLoading(false);
-    }
-};
+            const updatedUser = response.data?.data;
+
+            if (!updatedUser || !updatedUser._id) {
+                toast.error("Update failed: user data not returned");
+                return;
+            }
+
+
+            toast.success("Profile updated successfully!");
+            localStorage.setItem("user", JSON.stringify(updatedUser));
+            setProfileImage(updatedUser.profileImage); // preview new image
+            setProfileImageFile(null); // reset file
+            setUser(updatedUser)
+
+            setShowModal(false);
+            navigate(`/users/user/${updatedUser._id}`);
+
+        } catch (err) {
+            const message = err?.response?.data?.message || err.message || "Unknown error";
+
+            toast.error("Update failed: " + message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
 
 

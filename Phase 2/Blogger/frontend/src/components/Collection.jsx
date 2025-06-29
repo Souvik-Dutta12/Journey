@@ -9,9 +9,9 @@ import { useEffect } from 'react';
 const Collection = () => {
   const [menu] = useState("");
 
-  const [publishedBlogs,setPublishedBlogs] = useState([]);
+  const [publishedBlogs, setPublishedBlogs] = useState([]);
 
-  const { blogs,navigate,axios } = useAppContext();
+  const { blogs, navigate, axios } = useAppContext();
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -28,12 +28,12 @@ const Collection = () => {
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchPublishedBlogs();
-  },[blogs])
+  }, [blogs])
 
 
-  const filteredBlogs = publishedBlogs.slice(0,8);
+  const filteredBlogs = publishedBlogs.slice(0, 8);
   // ✅ Load more handler: check login
   const handleLoadMore = () => {
     if (token && user) {
@@ -54,7 +54,7 @@ const Collection = () => {
         {filteredBlogs.map((blog, index) => (
           <CardContainer key={blog._id} className="inter-var">
             <CardBody className="bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full sm:w-[22rem] h-[500px] flex flex-col rounded-xl p-6 border">
-              
+
               <div className='flex flex-col justify-evenly h-full'>
                 <CardItem className="text-xl font-bold text-neutral-600 dark:text-white">
                   {blog.title}
@@ -78,11 +78,11 @@ const Collection = () => {
               <div className="flex justify-between items-center mt-6">
                 <CardItem
                   translateZ={20}
-                  
+
                   className="px-4 py-2 rounded-xl text-md font-normal dark:text-white"
                 >
                   <Link to={`/blogs/blog/${encodeURIComponent(blog.slug)}`}>
-                  Read more →
+                    Read more →
                   </Link>
                 </CardItem>
               </div>

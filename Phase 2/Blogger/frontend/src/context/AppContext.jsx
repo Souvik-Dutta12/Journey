@@ -28,7 +28,7 @@ export const AppProvider = ({ children }) => {
 
     useEffect(() => {
         fetchBlogs();
-        
+
     }, [blogs]);
 
     useEffect(() => {

@@ -19,8 +19,8 @@ const Home = () => {
 
       <Collection />
 
-      <Moving /> 
-      
+      <Moving />
+
       <Footer />
     </div>
   )

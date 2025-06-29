@@ -1,20 +1,20 @@
-import mongoose,{Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const loveSchema = new Schema(
     {
-        blog:{
-            type:Schema.Types.ObjectId,
-            ref:"Blog"
+        blog: {
+            type: Schema.Types.ObjectId,
+            ref: "Blog"
         },
-        comment:{
-            type:Schema.Types.ObjectId,
-            ref:"Comment"
+        comment: {
+            type: Schema.Types.ObjectId,
+            ref: "Comment"
         },
-        lovedby:[{
-            type:Schema.Types.ObjectId,
-            ref:"User",
+        lovedby: [{
+            type: Schema.Types.ObjectId,
+            ref: "User",
         }]
-    },{timestamps:true}
+    }, { timestamps: true }
 )
 
 export const Love = mongoose.model("Love", loveSchema);

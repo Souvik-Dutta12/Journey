@@ -3,13 +3,13 @@ import { InfiniteMovingCards } from "./ui/infinite-moving-cards";
 
 const Moving = () => {
   return (
-   <div className="h-[20rem] sm:h-[24rem] md:h-[29rem] rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden px-4 sm:px-6">
-  <InfiniteMovingCards
-    items={testimonials}
-    direction="right"
-    speed="normal"
-  />
-</div>
+    <div className="h-[20rem] sm:h-[24rem] md:h-[29rem] rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden px-4 sm:px-6">
+      <InfiniteMovingCards
+        items={testimonials}
+        direction="right"
+        speed="normal"
+      />
+    </div>
 
   )
 }

@@ -15,10 +15,12 @@ import { useAppContext } from './context/AppContext'
 import Update from './components/Update'
 import Continue from './components/Continue'
 import Profile from './pages/Profile'
+import Contact from './pages/Contact'
 
 const App = () => {
 
   const { token } = useAppContext();
+
   return (
     <div className='w-screen h-auto '>
       <ToastContainer
@@ -31,7 +33,7 @@ const App = () => {
         pauseOnFocusLoss
         pauseOnHover
         theme='dark'
-        />
+      />
       <Nav />
 
       <Routes>
@@ -40,12 +42,13 @@ const App = () => {
         <Route path='/login' element={<Login />} />
         <Route path='/collection' element={<CollectionHero />} />
         <Route path='/writeblog' element={<WriteBlog />} />
+        <Route path='/contact' element={<Contact />} />
         <Route path="/blogs/blog/:slug" element={<ReadBlog />} />
         <Route path='/total' element={<Total />} />
         <Route path='/draft' element={<Draft />} />
         <Route path='/blogs/:slug' element={<Update />} />
         <Route path='/blogs/continue/:slug' element={<Continue />} />
-        <Route path='/users/user/:userId' element={<Profile />}/>
+        <Route path='/users/user/:userId' element={<Profile />} />
         <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Routes>
 

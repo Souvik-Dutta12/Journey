@@ -15,7 +15,7 @@ const Signup = () => {
     confirmPassword: '',
   });
 
-  const { axios, navigate,setUser } = useAppContext();
+  const { axios, navigate, setUser } = useAppContext();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -50,15 +50,15 @@ const Signup = () => {
         });
 
 
-        if(logRes.data.success){
+        if (logRes.data.success) {
           toast.success("Logged in successfully");
-          
+
           const token = logRes.data.data.accessToken;
-          const {user} = logRes.data.data
+          const { user } = logRes.data.data
 
           setUser(user);
-          localStorage.setItem("token",token);
-          localStorage.setItem("user",JSON.stringify(user))
+          localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(user))
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           navigate("/");
         }

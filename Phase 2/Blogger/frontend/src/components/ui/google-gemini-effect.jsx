@@ -2,6 +2,7 @@
 import { cn } from "../../lib/utils";
 import { motion } from "motion/react";
 import React from "react";
+import { Link } from "react-router";
 
 const transition = {
   duration: 0,
@@ -28,8 +29,10 @@ export const GoogleGeminiEffect = ({
       <div
         className="w-full h-[890px] -top-60 md:-top-65  flex items-center justify-center bg-red-transparent absolute ">
         <button
-          className="font-bold bg-white backdrop-blur-2xl rounded-full md:px-4 md:py-2 px-2 py-1 md:mt-33 mt-8 z-30 md:text-base text-black text-xs sm:text-md  w-fit mx-auto ">
-          Join with us
+          className="font-bold cursor-pointer bg-white backdrop-blur-2xl rounded-full md:px-4 md:py-2 px-2 py-1 md:mt-33 mt-8 z-30 md:text-base text-black text-xs sm:text-md  w-fit mx-auto ">
+          <Link to={"/contact"}>
+            Join with us
+          </Link>
         </button>
       </div>
       <svg

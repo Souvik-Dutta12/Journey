@@ -25,14 +25,14 @@ const WriteBlog = () => {
 
 
   const [isGenerating, setIsGenerating] = useState(false);
-const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { navigate, axios,setBlogs } = useAppContext();
+  const { navigate, axios, setBlogs } = useAppContext();
   const modules = {
     toolbar: [
       [{ header: [1, 2, 3, false] }],
       ["bold", "italic", "underline"],
-      [ "link"],
+      ["link"],
       [{ list: "ordered" }, { list: "bullet" }],
     ],
   };
@@ -79,47 +79,47 @@ const [isSubmitting, setIsSubmitting] = useState(false);
     setTags(tags.filter((_, i) => i !== index));
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!title || !slug || !shortDescription || !authorName || !description) {
-    return toast.error("Please fill in all required fields.");
-  }
+    if (!title || !slug || !shortDescription || !authorName || !description) {
+      return toast.error("Please fill in all required fields.");
+    }
 
-  if (!coverImage) return toast.error("Cover image is required.");
+    if (!coverImage) return toast.error("Cover image is required.");
 
-  setIsSubmitting(true); // start loading
+    setIsSubmitting(true); // start loading
 
-  const existingTagNames = availableTags
-    .filter(tag => tag?.name)
-    .map(tag => tag.name.toLowerCase());
+    const existingTagNames = availableTags
+      .filter(tag => tag?.name)
+      .map(tag => tag.name.toLowerCase());
 
-  const newTags = tags.filter(tag => !existingTagNames.includes(tag.toLowerCase()));
-  const finalTags = tags;
+    const newTags = tags.filter(tag => !existingTagNames.includes(tag.toLowerCase()));
+    const finalTags = tags;
 
-  const formData = new FormData();
-  formData.append("title", title);
-  formData.append("slug", slug);
-  formData.append("shortDescription", shortDescription);
-  formData.append("authorName", authorName);
-  formData.append("status", status);
-  
-  formData.append("description", description);
-  formData.append("coverImage", coverImage);
-  finalTags.forEach(tag => formData.append("tags", tag));
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("slug", slug);
+    formData.append("shortDescription", shortDescription);
+    formData.append("authorName", authorName);
+    formData.append("status", status);
 
-  try {
-    const res = await axios.post("/blogs/blog/create", formData);
-    toast.success("Blog created successfully!");
+    formData.append("description", description);
+    formData.append("coverImage", coverImage);
+    finalTags.forEach(tag => formData.append("tags", tag));
 
-    setBlogs((prev)=>[res.data.data, ...prev])
-    navigate("/collection");
-  } catch (error) {
-    toast.error("Blog submission failed.");
-  } finally {
-    setIsSubmitting(false); // stop loading
-  }
-};
+    try {
+      const res = await axios.post("/blogs/blog/create", formData);
+      toast.success("Blog created successfully!");
+
+      setBlogs((prev) => [res.data.data, ...prev])
+      navigate("/collection");
+    } catch (error) {
+      toast.error("Blog submission failed.");
+    } finally {
+      setIsSubmitting(false); // stop loading
+    }
+  };
 
   const generateAIDescription = async () => {
     if (!title || !shortDescription) {
@@ -165,9 +165,9 @@ const handleSubmit = async (e) => {
             Write Your Own Blog
           </h1>
           <form onSubmit={handleSubmit} className="space-y-6 mt-5 ">
-             <span className="text-neutral-500 cursor-pointer w-auto hover:text-white duration-300 flex gap-1 items-center">
-              <Link to={"/collection"}> 
-              <i className="ri-arrow-left-long-line"></i>Back
+            <span className="text-neutral-500 cursor-pointer w-auto hover:text-white duration-300 flex gap-1 items-center">
+              <Link to={"/collection"}>
+                <i className="ri-arrow-left-long-line"></i>Back
               </Link>
             </span>
             {/* Author Name */}
@@ -342,55 +342,55 @@ const handleSubmit = async (e) => {
 
             {/* Submit Button */}
             {isSubmitting ? (
-  <div className="flex justify-center items-center gap-2 mt-10">
-    <svg
-      className="animate-spin h-6 w-6 text-blue-400"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      ></circle>
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8v8H4z"
-      ></path>
-    </svg>
-    <p className="text-white text-sm">Please wait while we post your masterpiece...</p>
-  </div>
-) : (
-  <div className="flex mx-auto justify-center gap-6 mt-10 mb-15">
-    <div className=" flex justify-center text-center">
-      <HoverBorderGradient
-        containerClassName="rounded-full"
-        as="button"
-        type="submit"
-        onClick={() => setStatus("draft")}
-        className="px-7 py-3 dark:bg-zinc-800 cursor-pointer bg-white text-black dark:text-white flex items-center space-x-2"
-      >
-        <span className="hover:text-[#7fcfec] duration-300">Save blog</span>
-      </HoverBorderGradient>
-    </div>
-    <div className=" flex justify-center text-center">
-      <HoverBorderGradient
-        containerClassName="rounded-full"
-        as="button"
-        type="submit"
-        onClick={() => setStatus("published")}
-        className="px-7 py-3 dark:bg-zinc-900 cursor-pointer bg-white text-black dark:text-white flex items-center space-x-2"
-      >
-        <span className="hover:text-[#7fcfec] duration-300">Post blog</span>
-      </HoverBorderGradient>
-    </div>
-  </div>
-)}
+              <div className="flex justify-center items-center gap-2 mt-10">
+                <svg
+                  className="animate-spin h-6 w-6 text-blue-400"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8H4z"
+                  ></path>
+                </svg>
+                <p className="text-white text-sm">Please wait while we post your masterpiece...</p>
+              </div>
+            ) : (
+              <div className="flex mx-auto justify-center gap-6 mt-10 mb-15">
+                <div className=" flex justify-center text-center">
+                  <HoverBorderGradient
+                    containerClassName="rounded-full"
+                    as="button"
+                    type="submit"
+                    onClick={() => setStatus("draft")}
+                    className="px-7 py-3 dark:bg-zinc-800 cursor-pointer bg-white text-black dark:text-white flex items-center space-x-2"
+                  >
+                    <span className="hover:text-[#7fcfec] duration-300">Save blog</span>
+                  </HoverBorderGradient>
+                </div>
+                <div className=" flex justify-center text-center">
+                  <HoverBorderGradient
+                    containerClassName="rounded-full"
+                    as="button"
+                    type="submit"
+                    onClick={() => setStatus("published")}
+                    className="px-7 py-3 dark:bg-zinc-900 cursor-pointer bg-white text-black dark:text-white flex items-center space-x-2"
+                  >
+                    <span className="hover:text-[#7fcfec] duration-300">Post blog</span>
+                  </HoverBorderGradient>
+                </div>
+              </div>
+            )}
 
           </form>
         </div>

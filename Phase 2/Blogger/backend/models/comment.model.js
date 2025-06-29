@@ -1,30 +1,30 @@
-import mongoose,{Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const commentSchema = new Schema(
     {
-        blog:{
-            type:Schema.Types.ObjectId,
-            ref:"Blog",
-            required:true,
+        blog: {
+            type: Schema.Types.ObjectId,
+            ref: "Blog",
+            required: true,
         },
-        user:{
-            type:Schema.Types.ObjectId,
-            ref:"User",
-            required:true,
+        user: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
         },
-        content:{
-            type:String,
-            required:true,
-            maxlength:1000,
+        content: {
+            type: String,
+            required: true,
+            maxlength: 1000,
         },
-        loves:[
+        loves: [
             {
-                type:Schema.Types.ObjectId,
-                ref:"User",
+                type: Schema.Types.ObjectId,
+                ref: "User",
             }
         ],
-        
-    },{timestamps:true}
+
+    }, { timestamps: true }
 )
 
 

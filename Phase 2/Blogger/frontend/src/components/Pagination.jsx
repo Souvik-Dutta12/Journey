@@ -60,11 +60,10 @@ const Pagination = ({ totalPosts, postsPerPage, onPageChange }) => {
             <button
               key={num}
               onClick={() => goToPage(num)}
-              className={`px-3 py-1 text-sm rounded cursor-pointer whitespace-nowrap ${
-                currentPage === num
+              className={`px-3 py-1 text-sm rounded cursor-pointer whitespace-nowrap ${currentPage === num
                   ? "bg-zinc-800 text-white"
                   : "bg-transparent hover:bg-zinc-900 duration-300 text-zinc-600"
-              }`}
+                }`}
             >
               {num}
             </button>

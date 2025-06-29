@@ -3,45 +3,45 @@ import { HoverBorderGradient } from "./ui/hover-border-gradient";
 import { BackgroundBeams } from "./ui/background-beams";
 import { useAppContext } from '../context/AppContext';
 import { Link } from "react-router-dom"; // ✅ Import Link
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify';
 
 const Login = () => {
-  const { axios, setToken,navigate,setUser } = useAppContext();
+  const { axios, setToken, navigate, setUser } = useAppContext();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    const res = await axios.post("/users/login", {
-      email,
-      password,
-    });
-    const token = res?.data?.data?.accessToken;
-    const {user} = res.data.data;
-    if (token) {
-      // ✅ Save token
-      setUser(user);
-      setToken(token);
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user))
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    try {
+      const res = await axios.post("/users/login", {
+        email,
+        password,
+      });
+      const token = res?.data?.data?.accessToken;
+      const { user } = res.data.data;
+      if (token) {
+        // ✅ Save token
+        setUser(user);
+        setToken(token);
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user))
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-      // ✅ Show success toast
-      toast.success("Logged in successfully!");
+        // ✅ Show success toast
+        toast.success("Logged in successfully!");
 
-      // ✅ Navigate after short delay (optional)
-      navigate("/"); // Delay so user sees the toast
-    } else {
-      toast.error("Login failed");
+        // ✅ Navigate after short delay (optional)
+        navigate("/"); // Delay so user sees the toast
+      } else {
+        toast.error("Login failed");
+      }
+
+    } catch (err) {
+      toast.error("Login failed!");
     }
-
-  } catch (err) {
-    toast.error("Login failed!");
-  }
-};
+  };
 
 
   return (
@@ -103,7 +103,7 @@ const Login = () => {
 
           {/* Submit Button */}
           <HoverBorderGradient
-            onClick={(e)=>handleSubmit(e)}
+            onClick={(e) => handleSubmit(e)}
             containerClassName="rounded-full w-full mt-2"
             as="button"
             className="dark:bg-black cursor-pointer bg-white text-black dark:text-white flex items-center space-x-2"
