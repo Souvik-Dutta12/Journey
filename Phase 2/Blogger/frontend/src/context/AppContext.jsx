@@ -15,7 +15,7 @@ export const AppProvider = ({ children }) => {
     const [token, setToken] = useState(null);
     const [blogs, setBlogs] = useState([]);
     const [filter, setFilter] = useState("");
-    const [user, setUser] = useState(null)
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')))
 
     const fetchBlogs = async () => {
         try {
@@ -31,17 +31,39 @@ export const AppProvider = ({ children }) => {
         
     }, [blogs]);
 
-    useEffect(()=>{
+    useEffect(() => {
         const token = localStorage.getItem("token");
         const storedUser = localStorage.getItem("user");
+
         if (storedUser) {
             setUser(JSON.parse(storedUser));
         }
+
         if (token) {
             setToken(token);
             axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         }
-    },[])
+    }, []);
+
+    useEffect(() => {
+        if (user) {
+            localStorage.setItem("user", JSON.stringify(user));
+        } else {
+            localStorage.removeItem("user");
+        }
+    }, [user]);
+
+    // ✅ Keep token in sync with axios headers
+    useEffect(() => {
+        if (token) {
+            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+            localStorage.setItem("token", token);
+        } else {
+            delete axios.defaults.headers.common["Authorization"];
+            localStorage.removeItem("token");
+        }
+    }, [token]);
+
     const value = {
         axios,
         navigate,

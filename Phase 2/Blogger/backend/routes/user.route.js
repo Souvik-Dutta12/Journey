@@ -5,9 +5,9 @@ import{
     loginUser,
     logoutUser,
     refreshAccessToken,
-    updateProfieImage,
+    updateProfileImage,
     getUserById,
-    updateProfileDetails,
+    updateUserProfile,
     getBlogsByUser
 } from "../controllers/user.controller.js";
 
@@ -22,8 +22,8 @@ router.route("/login").post(loginUser)
 //secured route
 router.route("/user/logout").post(verifyJWT,logoutUser)
 router.route("/user/refresh-token").post(refreshAccessToken)
-router.route("/user/profile-image").patch(verifyJWT,upload.single("profileImage"),updateProfieImage)
-router.route("/user/update-profile").patch(verifyJWT,updateProfileDetails)
+// router.route("/user/profile-image").patch(verifyJWT,upload.single("profileImage"),updateProfileImage)
+router.route("/user/update-profile").patch(verifyJWT,upload.single("profileImage"),updateUserProfile)
 router.route("/user/:userId").get(verifyJWT,getUserById)
 
 

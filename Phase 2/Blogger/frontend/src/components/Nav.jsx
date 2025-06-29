@@ -37,7 +37,7 @@ const Nav = ({ className }) => {
             }
         } catch (error) {
             toast.error("Something went wrong while logging out");
-            console.error(error);
+
         }
     };
 

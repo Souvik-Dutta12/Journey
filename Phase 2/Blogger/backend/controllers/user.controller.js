@@ -180,35 +180,30 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 })
 
-const updateProfieImage = asyncHandler(async (req, res) => {
+const updateProfileImage = asyncHandler(async (req, res) => {
     const profileImageLocalPath = req.file?.path;
 
     if (!profileImageLocalPath) {
-        throw new ApiError(400, "profile image is required")
+        throw new ApiError(400, "Profile image is required.");
     }
 
-    const profileImage = await uploadOncloudinary(profileImageLocalPath);
+    const uploadedImage = await uploadOncloudinary(profileImageLocalPath);
 
-    if (!profileImage.url) {
-        throw new ApiError(400, "Error while uploading profile image");
+    if (!uploadedImage.url) {
+        throw new ApiError(500, "Error while uploading profile image.");
     }
 
-    const user = await User.findByIdAndUpdate(
-        req.user?._id,
-        {
-            $set: {
-                profileImage: profileImage.url
-            }
-        },
+    await User.findByIdAndUpdate(
+        req.user._id,
+        { $set: { profileImage: uploadedImage.url } },
         { new: true }
-    ).select("-password")
+    );
 
+    return res.status(200).json(
+        new ApiResponse(200, null, "Profile image updated successfully")
+    );
+});
 
-    return res.status(200)
-        .json(
-            new ApiResponse(200, user, "Profile image uploaded successfully")
-        )
-})
 
 const getUserById = asyncHandler(async (req, res) => {
     const { userId } = req.params;
@@ -224,30 +219,52 @@ const getUserById = asyncHandler(async (req, res) => {
 
 })
 
-const updateProfileDetails = asyncHandler(async (req, res) => {
-    const { username, email } = req.body;
+const updateUserProfile = asyncHandler(async (req, res) => {
+    const { username, email, password } = req.body;
 
-    if (!username && !email) {
-        throw new ApiError(400, "All fields are required");
+    if (!password) {
+        throw new ApiError(400, "Password is required to update profile.");
     }
 
-    const user = await User.findByIdAndUpdate(
-        req.user?._id,
-        {
-            $set: {
-                username,
-                email
-            }
-        }, {
-        new: true
+    const user = await User.findById(req.user._id);
+    if (!user) {
+        throw new ApiError(404, "User not found.");
     }
-    ).select("-password")
 
-    return res.status(200)
-        .json(
-            new ApiResponse(200, user, "User details updated successfully")
-        )
-})
+    const isPasswordCorrect = await user.isPasswordCorrect(password);
+    if (!isPasswordCorrect) {
+        throw new ApiError(401, "Incorrect password.");
+    }
+
+    const updateFields = {};
+
+    if (username) updateFields.username = username;
+    if (email) updateFields.email = email;
+
+    // Check and upload new profile image if exists
+
+    if (req.file?.path) {
+        const uploadedImage = await uploadOncloudinary(req.file.path);
+
+
+        if (!uploadedImage.url) {
+            throw new ApiError(500, "Image upload failed.");
+        }
+        updateFields.profileImage = uploadedImage.url;
+    }
+    
+    const updatedUser = await User.findByIdAndUpdate(
+        req.user._id,
+        { $set: updateFields },
+        { new: true }
+    ).select("_id username email profileImage");
+
+
+    return res.status(200).json(
+        new ApiResponse(200, updatedUser, "User profile updated successfully.")
+    );
+});
+
 
 const getBlogsByUser = asyncHandler(async (req, res) => {
     const userID = req.user?._id;
@@ -321,8 +338,8 @@ export {
     loginUser,
     logoutUser,
     refreshAccessToken,
-    updateProfieImage,
+    updateProfileImage,
     getUserById,
-    updateProfileDetails,
+    updateUserProfile,
     getBlogsByUser
 }

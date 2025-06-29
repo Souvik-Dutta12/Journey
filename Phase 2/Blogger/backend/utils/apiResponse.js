@@ -1,13 +1,13 @@
 class ApiResponse{
     constructor(
-        statuscode,
+        statusCode,
         data,
         message = 'success'
     ){
-        this.satuscode = statuscode
+        this.satuscode = statusCode
         this.data = data
         this.message = message
-        this.success = statuscode < 400
+        this.success = statusCode < 400
     }
 }
 
