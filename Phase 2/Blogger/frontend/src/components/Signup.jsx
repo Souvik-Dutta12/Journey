@@ -6,6 +6,7 @@ import { Button } from "./ui/moving-border";
 import { useAppContext } from '../context/AppContext';
 import { toast } from 'react-toastify';
 
+
 const Signup = () => {
 
   const [form, setForm] = useState({
@@ -72,10 +73,6 @@ const Signup = () => {
     }
   };
 
-  const handleGoogleSignUp = () => {
-    // TODO: Integrate Firebase / Google OAuth here
-    console.log('Google Sign Up Clicked');
-  };
 
   return (
     <div className="md:min-h-screen z-20 md:w-screen sm:w-[85vw] flex items-center justify-center px-4">
@@ -154,14 +151,7 @@ const Signup = () => {
         </div>
 
 
-        <Button
-          containerClassName="w-full hover:bg-zinc-800"
-          borderRadius="1.75rem"
-          className="bg-white dark:bg-black/90 z-40 cursor-pointer text-black dark:text-white border-neutral-200 dark:border-slate-800 flex gap-3 hover:bg-zinic-900"
-        >
-          <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
-          Sign Up with Google
-        </Button>
+        
         <p className="text-center text-md text-neutral-500">
           Already have an account? <a href="#" className="text-[#7fcfec] hover:underline duration-300">Log in</a>
         </p>

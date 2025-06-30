@@ -27,8 +27,8 @@ const Nav = ({ className }) => {
                 setUser(null);
                 // Clear auth state from context
                 setToken(null);   // if you're storing token in context
-                localStorage.removeItem("token"); // Clear token from local storage
-                localStorage.removeItem("user")
+                localStorage.clear();
+                sessionStorage.clear();
                 delete axios.defaults.headers.common["Authorization"];
                 // Redirect to login or home
                 navigate("/login");

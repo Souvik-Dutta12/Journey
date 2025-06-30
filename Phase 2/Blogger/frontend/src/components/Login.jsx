@@ -10,38 +10,46 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      const res = await axios.post("/users/login", {
-        email,
-        password,
-      });
-      const token = res?.data?.data?.accessToken;
-      const { user } = res.data.data;
-      if (token) {
-        // ✅ Save token
-        setUser(user);
-        setToken(token);
+  try {
+    const res = await axios.post("/users/login", {
+      email,
+      password,
+    });
+
+    const token = res?.data?.data?.accessToken;
+    const { user } = res.data.data;
+
+    if (token) {
+      setUser(user);
+      setToken(token);
+
+      // ✅ Save token & user based on "Remember Me" choice
+      if (rememberMe) {
         localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user))
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-        // ✅ Show success toast
-        toast.success("Logged in successfully!");
-
-        // ✅ Navigate after short delay (optional)
-        navigate("/"); // Delay so user sees the toast
+        localStorage.setItem("user", JSON.stringify(user));
       } else {
-        toast.error("Login failed");
+        sessionStorage.setItem("token", token);
+        sessionStorage.setItem("user", JSON.stringify(user));
       }
 
-    } catch (err) {
-      toast.error("Login failed!");
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+      toast.success("Logged in successfully!");
+      navigate("/");
+    } else {
+      toast.error("Login failed");
     }
-  };
+
+  } catch (err) {
+    toast.error("Login failed!");
+  }
+};
+
 
 
   return (
@@ -92,11 +100,13 @@ const Login = () => {
               <input
                 type="checkbox"
                 name="remember"
+                checked={rememberMe}
+  onChange={(e) => setRememberMe(e.target.checked)}
                 className="appearance-none h-4 w-4 rounded-full border border-gray-400 checked:bg-[#7fcfec] checked:border-transparent transition duration-200"
               />
               Remember me
             </label>
-            <Link to="/forgot-password" className="text-[#7fcfec] hover:underline duration-300">
+            <Link to="/login" className="text-[#7fcfec] hover:underline duration-300">
               Forgot password?
             </Link>
           </div>

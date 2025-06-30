@@ -42,7 +42,7 @@ const ReadBlog = () => {
   }, [comments, user?._id]);
 
   useEffect(() => {
-    console.log(data)
+
     fetchBlogData();
     fetchBlogComments(); // ✅ both triggered on mount/slug change
 

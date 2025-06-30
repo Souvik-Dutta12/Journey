@@ -30,21 +30,21 @@ export const AppProvider = ({ children }) => {
         
         fetchBlogs();
 
-    }, [blogs]);
-
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        const storedUser = localStorage.getItem("user");
-
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-
-        if (token) {
-            setToken(token);
-            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        }
     }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    const storedUser = localStorage.getItem("user") || sessionStorage.getItem("user");
+
+    if (storedUser) {
+        setUser(JSON.parse(storedUser));
+    }
+
+    if (token) {
+        setToken(token);
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    }
+}, []);
 
     useEffect(() => {
         if (user) {
