@@ -27,7 +27,7 @@ const CollectionHero = () => {
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
-  const { axios, navigate, blogs } = useAppContext();
+  const { axios, navigate } = useAppContext();
 
   const postsPerPage = 12;
 
@@ -39,6 +39,7 @@ const CollectionHero = () => {
   const fetchTags = async () => {
     try {
       const res = await axios.get("/tags/");
+
       setTags(res.data.data);
     } catch (error) {
       toast.error("Failed to fetch tags");
@@ -76,7 +77,11 @@ const CollectionHero = () => {
 
   const fetchUserBlogs = async () => {
     try {
-      const res = await axios.get(`/users/user/${user._id}/blogs`);
+      const res = await axios.get(`/users/user/${user._id}/blogs`,{
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      });
       const allUserBlogs = res.data.data;
       setPublishedBlogs(allUserBlogs.filter(blog => blog.status === "published"));
       setDraftBlogs(allUserBlogs.filter(blog => blog.status === "draft"));
@@ -90,7 +95,7 @@ const CollectionHero = () => {
     if(!user?._id || !token) return;
     fetchUserBlogs();
 
-  }, [user,token,blogs]);
+  }, [token,user]);
 
   const fetchFilteredBlogs = async () => {
     try {
@@ -117,6 +122,10 @@ const CollectionHero = () => {
   useEffect(() => {
     fetchFilteredBlogs();
   }, [selectedTags, currentPage]);
+
+  useEffect(() => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}, [currentPage]);
 
 
   return (

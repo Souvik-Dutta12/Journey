@@ -128,19 +128,19 @@ const ReadBlog = () => {
 
   const { coverImage, title, shortDescription, authorName, createdAt, tags, description } = data;
 
-  DOMPurify.addHook("uponSanitizeAttribute", function (node, data) {
-    if (data.attrName === "style") {
-      const allowedStyles = ["text-align"];
-      const styles = data.attrValue.split(";").map((s) => s.trim());
+DOMPurify.addHook("uponSanitizeAttribute", function (node, data) {
+  if (data.attrName === "style") {
+    const allowedStyles = ["text-align", "color", "background-color"];
+    const styles = data.attrValue.split(";").map((s) => s.trim());
 
-      const filtered = styles.filter((style) => {
-        const [property] = style.split(":").map((part) => part.trim());
-        return allowedStyles.includes(property);
-      });
+    const filtered = styles.filter((style) => {
+      const [property] = style.split(":").map((part) => part.trim());
+      return allowedStyles.includes(property);
+    });
 
-      data.attrValue = filtered.join("; ");
-    }
-  });
+    data.attrValue = filtered.join("; ");
+  }
+});
 
   const cleanedDescription = DOMPurify.sanitize(
     description.replace(/<p>(\s|&nbsp;|<br>)*<\/p>/g, ""), // clean empty p
@@ -206,7 +206,7 @@ const ReadBlog = () => {
           ))}
         </div>
         <div
-          className="prose prose-zinc dark:prose-invert max-w-none custom-prose"
+          className="blog-content prose prose-zinc dark:prose-invert max-w-none custom-prose"
           dangerouslySetInnerHTML={{ __html: cleanedDescription }}
         ></div>
 

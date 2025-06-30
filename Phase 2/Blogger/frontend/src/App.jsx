@@ -17,6 +17,8 @@ import Continue from './components/Continue'
 import Profile from './pages/Profile'
 import Contact from './pages/Contact'
 
+import "react-quill/dist/quill.snow.css"; // ✅ Required for Quill formatting
+
 const App = () => {
 
   const { token } = useAppContext();

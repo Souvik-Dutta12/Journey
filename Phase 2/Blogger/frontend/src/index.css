@@ -1,6 +1,9 @@
 @import 'remixicon/fonts/remixicon.css';
 @import "tailwindcss";
 
+
+
+
 @theme inline {
   --animate-scroll: scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite;
 
@@ -112,23 +115,14 @@
 }
 
 
+.blog-content {
+  /* ensure Quill styles apply */
+  all: revert;
+  font-family: sans-serif;
+  line-height: 1.6;
+}
+
 @layer components {
-  .custom-prose .ql-align-center {
-    @apply text-center;
-  }
-
-  .custom-prose .ql-align-right {
-    @apply text-right;
-  }
-
-  .custom-prose .ql-align-left {
-    @apply text-left;
-  }
-
-  .custom-prose .ql-align-justify {
-    @apply text-justify;
-  }
-
   /* Optional: Ensure headers inside prose have correct font sizes */
   .custom-prose h1 {
     @apply text-4xl font-bold;

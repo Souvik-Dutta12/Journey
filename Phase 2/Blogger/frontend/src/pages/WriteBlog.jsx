@@ -34,6 +34,7 @@ const WriteBlog = () => {
       ["bold", "italic", "underline"],
       ["link"],
       [{ list: "ordered" }, { list: "bullet" }],
+      [{ color: [] }, { background: [] }],
     ],
   };
 
@@ -45,6 +46,8 @@ const WriteBlog = () => {
     "link",
     "list",
     "bullet",
+    "color",      
+  "background", 
   ];
 
 
