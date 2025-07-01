@@ -61,7 +61,7 @@ const Draft = () => {
                       src={blog.coverImage || "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop"}
                       height="1000"
                       width="1000"
-                      className="h-60 w-full object-cover rounded-xl group-hover/card:shadow-xl"
+                      className="h-60 w-full object-center rounded-xl group-hover/card:shadow-xl"
                       alt="blog thumbnail"
                     />
                   </CardItem>

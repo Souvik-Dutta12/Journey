@@ -135,6 +135,14 @@
   .custom-prose h3 {
     @apply text-2xl font-medium;
   }
+   .custom-prose a {
+    @apply text-sky-500 underline;
+  }
+
+  .custom-prose a:hover {
+    @apply text-sky-600;
+  }
+
 }
 
 .custom-prose ul {

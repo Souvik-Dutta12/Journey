@@ -38,6 +38,7 @@ const Update = () => {
       ["bold", "italic", "underline"],
       ["link"],
       [{ list: "ordered" }, { list: "bullet" }],
+      [{ color: [] }, { background: [] }],
     ],
   };
 
@@ -49,6 +50,8 @@ const Update = () => {
     "link",
     "list",
     "bullet",
+    "color",      
+  "background", 
   ];
 
 
