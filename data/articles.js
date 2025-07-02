@@ -794,7 +794,7 @@ export const data = [
     "type_of": "article",
     "id": 2511895,
     "title": "Breaking Bottlenecks: How Organizations Build Systems of Balanced Reciprocity",
-    "short_description": "Explore how to design systems that prevent burnout, distribute contributions, and transform individual reciprocity intelligence into organizational strength",
+    "short_description": "Explore how to design systems that prevent burnout individual reciprocity intelligence",
     "description": "Breaking Bottlenecks: How Organizations Build Systems of Balanced Reciprocity — In today’s fast-moving business landscape, organizations often face bottlenecks that slow down innovation, collaboration, and growth. One powerful way to overcome these challenges is by fostering systems of balanced reciprocity—mutually beneficial exchanges where trust, fairness, and accountability form the foundation. Instead of one-sided transactions or rigid hierarchies, balanced reciprocity encourages open communication, shared responsibilities, and continuous feedback loops across teams and departments. This approach breaks down silos by promoting transparency and empowering individuals to contribute their strengths while relying on others’ expertise. When organizations design workflows and cultures around give-and-take rather than competition or top-down mandates, bottlenecks dissolve as cooperation flourishes. Such systems also nurture resilience, as members feel valued and motivated to maintain equitable relationships. Ultimately, building balanced reciprocity helps organizations adapt quickly, scale efficiently, and create environments where collective success becomes the norm rather than the exception.",
     "slug": "breaking-bottlenecks-how-organizations-build-systems-of-balanced-reciprocity-4leg",
     "language": "en",
@@ -807,7 +807,7 @@ export const data = [
     "tags": "teambuilding, community",
     "user": {
       "name": "BekahHW",
-      "username": "bekahhw",
+      "username": "bekah",
       "twitter_username": "BekahHW",
       "github_username": "BekahHW",
       "user_id": 345658,
