@@ -47,10 +47,19 @@ This guide takes you from zero to a full-stack MERN developer in 8 weeks, phase-
 - REST API basics – CRUD routes
 - Postman testing
 
-**Projects:**
-- Book API with Express
-- Basic contact form backend
-- Simple login API (no DB)
+***Projects:***
+----
+**YouTube**
+
+Core Tech: MPEG-DASH, HLS, CDN
+Used For: Adaptive video streaming
+Other Tech:
+
+FFmpeg for video processing
+
+BigQuery, Colossus (Google’s storage backend)
+
+Uses WebM, VP9, AV1 formats
 
 ---
 
@@ -64,9 +73,9 @@ This guide takes you from zero to a full-stack MERN developer in 8 weeks, phase-
 - Basic auth with JWT & bcrypt
 
 **Projects:**
-- Notes app (login + dashboard)
-- Fullstack blog with MongoDB
-- Task manager (React + Express + Mongo)
+---
+**Portfoilio**
+
 
 ---
 
@@ -80,10 +89,18 @@ This guide takes you from zero to a full-stack MERN developer in 8 weeks, phase-
 - Testing – Jest / Mocha (optional)
 
 **Projects:**
-- E-commerce backend
-- Job board API
-- Admin panel system
+---
+**Zoom**
 
+Core Tech: WebRTC, Protobuf, UDP
+Used For: High-quality video conferencing
+Other Tech:
+
+Custom audio/video codecs
+
+TLS encryption
+
+Native apps use low-level SDKs for performance
 ---
 
 ### 🔴 Phase 6: Deployment & DevOps Essentials
@@ -96,80 +113,39 @@ This guide takes you from zero to a full-stack MERN developer in 8 weeks, phase-
 - Domain mapping
 
 **Projects:**
-- Deploy MERN app
-- Live portfolio site
+---
+**kothamala AI**
 
+upgradtion
+
+
+**Instagram**
+
+Core Tech: Django (Python Framework), REST API
+Used For: Backend APIs and admin system
+Other Tech:
+
+PostgreSQL, Redis, RabbitMQ
+
+React Native for mobile apps
+
+GraphQL (in some newer features)
+
+
+**Uber**
+
+Core Tech: gRPC, Kafka, Go
+Used For: Backend service communication
+Other Tech:
+
+Mapbox / Google Maps API
+
+MySQL, Redis
+
+Custom ML models for pricing, route estimation
 ---
 
-## 📅 WEEKLY TASK BREAKDOWN
 
----
-
-### ✅ Week 1: HTML, CSS, Git & JS Basics
-- HTML/CSS fundamentals
-- Flexbox, Grid
-- Git & GitHub
-- JS: Variables, loops, functions
-**Project**: Portfolio site + Quiz app
-
----
-
-### ✅ Week 2: JavaScript DOM & Advanced Basics
-- DOM: querySelector, events
-- ES6 basics: arrow functions, template literals
-- LocalStorage
-**Project**: Calculator or Weather App
-
----
-
-### ✅ Week 3: Async JS + Real API Practice
-- `fetch`, Promises
-- `async/await`
-- Working with real APIs
-**Project**: Weather App (OpenWeather)
-
----
-
-### ✅ Week 4: React.js Basics
-- React setup, JSX, components
-- useState, props, useEffect
-- Routing with React Router
-**Project**: Multi-page blog frontend
-
----
-
-### ✅ Week 5: Node.js + Express Backend
-- REST API with Express
-- Route handling, middleware
-- Basic CRUD
-**Project**: Book API (tested in Postman)
-
----
-
-### ✅ Week 6: MongoDB + MERN Integration
-- MongoDB Atlas + Compass
-- Mongoose schema/models
-- Connect frontend/backend via Axios
-- JWT + bcrypt authentication
-**Project**: Note-taking MERN app
-
----
-
-### ✅ Week 7: Auth, Security, Deployment
-- Auth (JWT, bcrypt)
-- Role-based access
-- Deployment (Render + Vercel)
-**Project**: Auth-enabled Blog App (live)
-
----
-
-### ✅ Week 8: Capstone Project + Polish
-- Build major project (E-commerce, Blog, Task App)
-- Polish code & structure
-- Deploy + update portfolio
-**Project**: Final MERN Capstone (live + featured)
-
----
 
 ### 🧠 Bonus Learning (Optional):
 - Redux Toolkit / Zustand
@@ -180,9 +156,8 @@ This guide takes you from zero to a full-stack MERN developer in 8 weeks, phase-
 
 ---
 
-✅ **Tip**: After each phase, push your code to GitHub and write a short README for every project. It will boost your resume and show real progress.
 
----
 
-Happy Coding! 💻✨  
-Made with ❤️ for Souvik Dutta
+
+
+
